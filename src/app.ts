@@ -71,12 +71,12 @@ function doneLoading() {
     bg.height = screenSize.height
     bg.name = "background";
 
-    player1 = new Player(app, app.loader.resources.gun_vip1.texture, "test player", 1, app.loader.resources.bullet.texture, 99999, 100, 1);
-    player2 = new Player(app, app.loader.resources.gun_vip1.texture, "test player", 2, app.loader.resources.bullet.texture, 99999, 100, 1);
-    player3 = new Player(app, app.loader.resources.gun_vip1.texture, "test player", 3, app.loader.resources.bullet.texture, 99999, 100, 1);
-    player4 = new Player(app, app.loader.resources.gun_vip1.texture, "test player", 4, app.loader.resources.bullet.texture, 99999, 100, 1);
+    player1 = new Player(app, app.loader.resources.gun_vip1.texture, "test player", 1, app.loader.resources.bullet.texture, 99999, 100, 5);
+    player2 = new Player(app, app.loader.resources.gun_vip1.texture, "test player", 2, app.loader.resources.bullet.texture, 99999, 100, 5);
+    player3 = new Player(app, app.loader.resources.gun_vip1.texture, "test player", 3, app.loader.resources.bullet.texture, 99999, 100, 5);
+    player4 = new Player(app, app.loader.resources.gun_vip1.texture, "test player", 4, app.loader.resources.bullet.texture, 99999, 100, 5);
 
-    dragon = new FishSpine(app, 0, screenSize.height / 2 + 300, app.loader.resources.dragon.spineData, "Dragon", 100, 1, Direction.sin);
+    dragon = new FishSpine(app, 0, 0, app.loader.resources.dragon.spineData, "Dragon", 100, 1, Direction.sin);
     dragon.visible = visible;
 
     gameScene.addChild(

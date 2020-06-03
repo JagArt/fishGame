@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js"
-import { Direction, slDirection, sbwDirection } from "./utils/direction";
+import { Direction, slDirection, sbwDirection, sine_wave, linear } from "./utils/direction";
 import { rotateToPoint } from "./utils/rotateToPointController";
 import { CustomGraphics, CustomGraphicsGeometry, CustomGraphics2 } from "./utils/customgrafics";
 
@@ -12,6 +12,8 @@ export class FishSpine extends PIXI.spine.Spine {
     currentPosition: number;
     hasHit: boolean;
 
+    explosionTextures: PIXI.Texture[] = [];
+
     constructor(app: PIXI.Application, x: number = 0, y: number = 0, skeletonData: PIXI.spine.core.SkeletonData, name: string = "none", hp: number = 100, speed: number = 5, direction: Direction) {
         super(skeletonData);
         this.app = app;
@@ -20,11 +22,23 @@ export class FishSpine extends PIXI.spine.Spine {
         this.direction = direction;
         this.name = name;
         this.hp = hp;
-        this.position.x = - this.width;
-        this.position.y = y;
         this.speed = speed;
         this.currentPosition = 0;
         this.hasHit = false;
+
+        if (x == 0) {
+            this.position.x = - this.width;
+            this.position.y = y;
+        } else if (y == 0) {
+            this.position.x = x;
+            this.position.y = - this.height;
+        }
+
+
+        for (var i = 0; i < 26; i++) {
+            const texture = PIXI.Texture.from(`Explosion_Sequence_A ${i + 1}.png`);
+            this.explosionTextures.push(texture);
+        }
         // let bezier = new CustomGraphics2();
         // bezier.lineStyle(5, 0xAA0000, 1);
         // bezier.bezierCurveTo(100, 500, 200, 500, 600, 0);
@@ -39,15 +53,12 @@ export class FishSpine extends PIXI.spine.Spine {
     }
 
     gameLoop(delta: PIXI.Ticker) {
-        let prevPosition = { x: this.x, y: this.y };
 
-        this.position.x += this.speed;
-        this.position.y = this.app.screen.height / 2 + 100 * Math.sin(this.x / 100 + 100);
-
-        // this.position.x = this.route[this.currentPosition++];
-        // this.position.y = this.route[this.currentPosition++];
-
-        this.rotation = rotateToPoint(this.x, this.y, prevPosition.x, prevPosition.y);
+        if (this.direction == Direction.sin) {
+            sine_wave(this);
+        } else if (this.direction == Direction.lin) {
+            linear(this);
+        }
 
         if (this.hasHit) {
             this.alpha = 0.5;
@@ -56,7 +67,18 @@ export class FishSpine extends PIXI.spine.Spine {
             this.alpha = 1;
         }
 
-        if (this.hp == 0) {
+        if (this.hp <= 0) {
+            let explosion = new PIXI.AnimatedSprite(this.explosionTextures);
+            explosion.loop = false;
+            explosion.scale.set(2, 2);
+            explosion.anchor.set(.5, .5);
+            explosion.position.copyFrom(this.position);
+            explosion.gotoAndPlay(0);
+            this.app.stage.addChild(explosion);
+            explosion.onComplete = () => {
+                this.app.stage.removeChild(explosion);
+            }
+
             this.hp = 100;
             this.position.x = - this.width;
             this.position.y = this.app.screen.height / 2 + 300;

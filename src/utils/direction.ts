@@ -1,6 +1,26 @@
+import { Sprite, spine } from "pixi.js";
+import { FishSprite } from "../fishSprite";
+import { FishSpine } from "../fishSpine";
+import { rotateToPoint } from "./rotateToPointController";
+
 export enum Direction {
-    Sl, Sbw, sin
+    Sl, Sbw, sin, lin
 }
+
+export function sine_wave(sprite: FishSpine) {
+    let prevPosition = { x: sprite.x, y: sprite.y };
+    sprite.position.x += sprite.speed;
+    sprite.position.y = sprite.app.screen.height / 2 + 100 * Math.sin(sprite.x / 100 + 100);
+    sprite.rotation = rotateToPoint(sprite.x, sprite.y, prevPosition.x, prevPosition.y);
+}
+
+export function linear(sprite: FishSpine) {
+    let prevPosition = { x: sprite.x, y: sprite.y };
+    sprite.position.x += sprite.speed;
+    sprite.position.y += sprite.speed;
+    sprite.rotation = rotateToPoint(sprite.x, sprite.y, prevPosition.x, prevPosition.y);
+}
+
 
 export function slDirection() {
     // let horizontal = 0.5//getRandomInt(-1, 1)
@@ -58,7 +78,5 @@ export function makeStroke() {
     // }
 }
 
-export function sine_wave() {
 
-}
 

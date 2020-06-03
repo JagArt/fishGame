@@ -32,6 +32,7 @@ export class Bullet extends PIXI.Sprite {
 
         let explosion = new PIXI.AnimatedSprite(this.explosionTextures);
         explosion.loop = false;
+        explosion.scale.set(0.5, 0.5);
         explosion.anchor.set(.5, .5);
         explosion.position.copyFrom(this.position);
         explosion.gotoAndPlay(0);
