@@ -34,7 +34,7 @@ export class FishSpine extends PIXI.spine.Spine {
         // this.interactive = true;
         // this.buttonMode = true;
         // this.on("pointerdown", () => this.onClick());
-
+        // console.log(this);
         app.ticker.add(delta => this.gameLoop(delta));
     }
 

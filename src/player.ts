@@ -94,7 +94,7 @@ export class Player extends PIXI.Container {
     }
 
     shoot(rotation: number, startPosition: { x: number, y: number }) {
-        let bullet = new Bullet(this.bulletTex, startPosition.x, startPosition.y, rotation, 10);
+        let bullet = new Bullet(this.app, this.bulletTex, startPosition.x, startPosition.y, rotation, 10);
         this.app.stage.addChild(bullet);
         this.credits -= this.damage;
         this.bullets.push(bullet);

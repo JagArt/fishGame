@@ -22,10 +22,6 @@ let effectsPanel: PIXI.Container;
 
 let visible: boolean;
 
-const explosionTextures: PIXI.Texture[] = [];
-
-const shootSound = PIXI.sound.Sound.from('sounds/Shotgun+2.mp3');
-
 // const bezier = new CustomGraphics(new CustomGraphicsGeometry());
 
 window.onload = function () {
@@ -156,21 +152,10 @@ function doneLoading() {
 
     console.log(app);
 
-
-    for (var i = 0; i < 26; i++) {
-        const texture = PIXI.Texture.from(`Explosion_Sequence_A ${i + 1}.png`);
-        explosionTextures.push(texture);
-    }
-
-    let explosion = new PIXI.AnimatedSprite(explosionTextures);
-    explosion.position.set(app.screen.width / 2, app.screen.height / 2);
-    explosion.gotoAndPlay(0);
-
     app.stage.addChild(
         gameScene,
         updatePanel,
         effectsPanel,
-        // explosion
         // bezier,
         // realPath
     );
@@ -186,10 +171,6 @@ function gameLoop(delta: PIXI.Ticker) {
     for (var b = 0; b < player1.bullets.length; b++) {
         if (player1.bullets.length > 0) {
             if (rectsIntersect(dragon, player1.bullets[b])) {
-                let explosion = new PIXI.AnimatedSprite(explosionTextures);
-                explosion.position.set(app.screen.width / 2, app.screen.height / 2);
-                explosion.gotoAndStop(0);
-
                 player1.bullets[b].hit();
                 player1.bullets.splice(player1.bullets.indexOf(player1.bullets[b]), 1);
                 dragon.hp -= player1.damage;
