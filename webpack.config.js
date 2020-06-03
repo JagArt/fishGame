@@ -40,7 +40,6 @@ module.exports = {
     new CopyPlugin([
         {
             from: 'src/images', to: 'images',
-            // from: 'src/sounds', to: 'sounds'
         },
     ]),
     new CopyPlugin([

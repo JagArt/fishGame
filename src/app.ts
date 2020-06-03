@@ -1,7 +1,6 @@
 import * as PIXI from "pixi.js"
 window.PIXI = PIXI;
 import "pixi-spine";
-import "pixi-sound";
 import { FishSprite } from "./fishSprite";
 import { Player } from "./player";
 import { Direction } from "./utils/direction";

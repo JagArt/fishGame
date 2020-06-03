@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js"
 import { rotateToPoint } from "./utils/rotateToPointController";
 import { Bullet } from "./bullet";
+import sound from 'pixi-sound'
 
 export class Player extends PIXI.Container {
     app: PIXI.Application;
@@ -20,7 +21,7 @@ export class Player extends PIXI.Container {
 
     creditsText: PIXI.Text;
     gemsText: PIXI.Text;
-    // shootSound: PIXI.sound.Sound = PIXI.sound.Sound.from('sounds/Shotgun+2.mp3');
+    shootSound: sound.Sound = sound.Sound.from('sounds/Shotgun+2.mp3');
 
     constructor(app: PIXI.Application, texture: PIXI.Texture, name: string = "none", screenPosition: number, bulletTex: PIXI.Texture, credits: number, gems: number, damage: number) {
         super();
@@ -36,6 +37,8 @@ export class Player extends PIXI.Container {
 
         this.bulletTex = bulletTex;
         this.damage = damage;
+
+        this.shootSound.volume = 0.01;
 
         this.sprite = PIXI.Sprite.from(texture);
         this.sprite.anchor.set(0.5);
@@ -60,7 +63,7 @@ export class Player extends PIXI.Container {
         this.addChild(this.sprite);
 
         this.app.stage.on("mousedown", (e: any) => {
-            // shootSound.play();
+            this.shootSound.play();
             this.shoot(this.sprite.rotation, {
                 x: this.sprite.position.x + Math.cos(this.sprite.rotation) * 75,
                 y: this.sprite.position.y + Math.sin(this.sprite.rotation) * 75
