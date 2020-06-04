@@ -1,37 +1,48 @@
 import * as PIXI from "pixi.js"
-import { Direction, slDirection, sbwDirection, sine_wave, linear } from "./utils/direction";
+import { Routes, slDirection, sbwDirection, sine_wave, linear, Directions } from "./utils/routes";
 import { rotateToPoint } from "./utils/rotateToPointController";
 import { CustomGraphics, CustomGraphicsGeometry, CustomGraphics2 } from "./utils/customgrafics";
 
 export class FishSpine extends PIXI.spine.Spine {
     app: PIXI.Application;
-    direction: Direction
+    route: Routes
+    direction?: Directions;
     speed: number;
     hp: number;
-    route: number[] = [];
     currentPosition: number;
     hasHit: boolean;
 
+    sideX: number;
+    sideY: number;
+
     explosionTextures: PIXI.Texture[] = [];
 
-    constructor(app: PIXI.Application, x: number = 0, y: number = 0, skeletonData: PIXI.spine.core.SkeletonData, name: string = "none", hp: number = 100, speed: number = 5, direction: Direction) {
+    constructor(app: PIXI.Application, x: number = 0, y: number = 0, skeletonData: PIXI.spine.core.SkeletonData, name: string = "none", hp: number = 100, speed: number = 5, route: Routes, direction?: Directions) {
         super(skeletonData);
         this.app = app;
-        this.width = 200;
-        this.height = 200;
+        this.width = 150;
+        this.height = 150;
+        this.route = route;
         this.direction = direction;
         this.name = name;
         this.hp = hp;
         this.speed = speed;
         this.currentPosition = 0;
         this.hasHit = false;
-
+        this.sideX = x;
+        this.sideY = y;
+        this.position.x = x;
+        this.position.y = y;
         if (x == 0) {
-            this.position.x = - this.width;
-            this.position.y = y;
-        } else if (y == 0) {
-            this.position.x = x;
-            this.position.y = - this.height;
+            this.position.x -= this.width;
+        } else if (x >= app.screen.width) {
+            this.position.x += this.width;
+        }
+
+        if (y == 0) {
+            this.position.y -= this.height;
+        } else if (y >= app.screen.height) {
+            this.position.y += this.height;
         }
 
 
@@ -54,9 +65,9 @@ export class FishSpine extends PIXI.spine.Spine {
 
     gameLoop(delta: PIXI.Ticker) {
 
-        if (this.direction == Direction.sin) {
+        if (this.route == Routes.sin) {
             sine_wave(this);
-        } else if (this.direction == Direction.lin) {
+        } else if (this.route == Routes.linear) {
             linear(this);
         }
 
@@ -78,10 +89,6 @@ export class FishSpine extends PIXI.spine.Spine {
             explosion.onComplete = () => {
                 this.app.stage.removeChild(explosion);
             }
-
-            this.hp = 100;
-            this.position.x = - this.width;
-            this.position.y = this.app.screen.height / 2 + 300;
         }
     }
 

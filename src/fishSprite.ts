@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js"
-import { Direction } from "./utils/direction";
+import { Routes } from "./utils/routes";
 
 export class FishSprite extends PIXI.Sprite {
-    direction: Direction
+    direction: Routes
     speed: number;
     hp: number;
 
@@ -14,7 +14,7 @@ export class FishSprite extends PIXI.Sprite {
     strokeMaxAngle: number = 40;
 
 
-    constructor(x: number = 0, y: number = 0, texture: PIXI.Texture, name: string = "none", hp: number = 100, speed: number = 5, direction: Direction) {
+    constructor(x: number = 0, y: number = 0, texture: PIXI.Texture, name: string = "none", hp: number = 100, speed: number = 5, direction: Routes) {
         super(texture);
         this.direction = direction;
         this.anchor.set(0.5);
@@ -31,11 +31,11 @@ export class FishSprite extends PIXI.Sprite {
 
     go() {
         switch (this.direction) {
-            case Direction.Sl: {
+            case Routes.Sl: {
                 this.slDirection()
                 break
             }
-            case Direction.Sbw: {
+            case Routes.Sbw: {
                 this.sbwDirection()
                 break
             }

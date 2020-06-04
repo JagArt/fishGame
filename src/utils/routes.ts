@@ -3,8 +3,43 @@ import { FishSprite } from "../fishSprite";
 import { FishSpine } from "../fishSpine";
 import { rotateToPoint } from "./rotateToPointController";
 
-export enum Direction {
-    Sl, Sbw, sin, lin
+export enum Routes {
+    Sl, Sbw, sin, linear
+}
+
+export enum Directions {
+    fromRightToLeft,
+    fromLeftToRight,
+    downUp,
+    topDown
+}
+
+function fishDirection(sprite: FishSpine): { dx: number, dy: number } {
+    var x = 1,
+        y = 1;
+    if (sprite.sideX == 0 && sprite.sideY == 0) {
+        return { dx: x, dy: y };
+    } else if (sprite.sideX >= sprite.app.screen.width && sprite.sideY >= sprite.app.screen.height) {
+        return { dx: -x, dy: -y };
+    }
+
+    if (sprite.sideX == 0) {
+        y = sprite.direction == Directions.topDown ? 1 : -1;
+        return { dx: x, dy: y };
+    } else if (sprite.sideY == 0) {
+        x = sprite.direction == Directions.fromRightToLeft ? -1 : 1;
+        return { dx: x, dy: y };
+    }
+
+    if (sprite.sideX >= sprite.app.screen.width) {
+        y = sprite.direction == Directions.topDown ? 1 : -1;
+        return { dx: -x, dy: y };
+    } else if (sprite.sideY >= sprite.app.screen.height) {
+        x = sprite.direction == Directions.downUp ? -1 : -1;
+        return { dx: x, dy: -y };
+    }
+    return { dx: x, dy: y };
+
 }
 
 export function sine_wave(sprite: FishSpine) {
@@ -15,10 +50,13 @@ export function sine_wave(sprite: FishSpine) {
 }
 
 export function linear(sprite: FishSpine) {
-    let prevPosition = { x: sprite.x, y: sprite.y };
-    sprite.position.x += sprite.speed;
-    sprite.position.y += sprite.speed;
+    let prevPosition = { x: sprite.position.x, y: sprite.position.y };
+    console.log(sprite.position.x + ", " + sprite.position.y);
+    console.log(sprite.name + ": " + fishDirection(sprite).dx + ", " + fishDirection(sprite).dy);
+    sprite.position.x += sprite.speed * fishDirection(sprite).dx;
+    sprite.position.y += sprite.speed * fishDirection(sprite).dy;
     sprite.rotation = rotateToPoint(sprite.x, sprite.y, prevPosition.x, prevPosition.y);
+
 }
 
 
