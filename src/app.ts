@@ -6,6 +6,7 @@ import { Player } from "./player";
 import { Routes, Directions } from "./utils/routes";
 import { FishSpine } from "./fishSpine";
 import { Effects } from "./effects";
+// import "pixi-timer";
 
 const screenSize = { width: 1280, height: 720 };
 
@@ -76,7 +77,7 @@ function doneLoading() {
 
 
     dragons.push(new FishSpine(app, 0, 0, app.loader.resources.dragon.spineData, "Dragon[0,0] sin", 100, 1, Routes.sin));
-    // dragons.push(new FishSpine(app, 0, 0, app.loader.resources.dragon.spineData, "Dragon[0,0]", 100, 1, Routes.linear));
+    dragons.push(new FishSpine(app, 0, 0, app.loader.resources.dragon.spineData, "Dragon[0,0]", 100, 1, Routes.linear));
     // dragons.push(new FishSpine(app, screenSize.width, screenSize.height, app.loader.resources.dragon.spineData, "Dragon[>, >]", 100, 1, Routes.linear, Directions.fromLeftToRight));
     // dragons.push(new FishSpine(app, 500, 0, app.loader.resources.dragon.spineData, "Dragon[500, 0]", 100, 1, Routes.linear, Directions.fromLeftToRight));
     // dragons.push(new FishSpine(app, screenSize.width, 200, app.loader.resources.dragon.spineData, "Dragon[>, 200]", 100, 1, Routes.linear, Directions.fromLeftToRight));

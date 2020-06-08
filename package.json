@@ -21,7 +21,8 @@
   },
   "dependencies": {
     "pixi-sound": "^3.0.4",
-    "pixi-spine": "^2.1.8"
+    "pixi-spine": "^2.1.8",
+    "pixi-timer": "^1.0.1"
   },
   "keywords": [],
   "description": ""
