@@ -10,7 +10,9 @@ export class FishSpine extends PIXI.spine.Spine {
     speed: number;
     hp: number;
     currentPosition: number;
+
     hasHit: boolean;
+    isFreeze: boolean;
 
     sideX: number;
     sideY: number;
@@ -29,6 +31,7 @@ export class FishSpine extends PIXI.spine.Spine {
         this.speed = speed;
         this.currentPosition = 0;
         this.hasHit = false;
+        this.isFreeze = false;
         this.sideX = x;
         this.sideY = y;
         this.position.x = x;
@@ -65,10 +68,12 @@ export class FishSpine extends PIXI.spine.Spine {
 
     gameLoop(delta: PIXI.Ticker) {
 
-        if (this.route == Routes.sin) {
-            sine_wave(this);
-        } else if (this.route == Routes.linear) {
-            linear(this);
+        if (!this.isFreeze) {
+            if (this.route == Routes.sin) {
+                sine_wave(this);
+            } else if (this.route == Routes.linear) {
+                linear(this);
+            }
         }
 
         if (this.hasHit) {
@@ -112,6 +117,13 @@ export class FishSpine extends PIXI.spine.Spine {
     // onClick() {
     //     console.log(this.route.length);
     // }
+
+    freeze() {
+        this.isFreeze = true;
+        // let track = this.state.tac
+        // this.state.setAnimation(0, "flying", false);
+        this.autoUpdate = false;
+    }
 }
 
 

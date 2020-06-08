@@ -100,16 +100,31 @@ function doneLoading() {
     let updateSquare2 = new Effects(PIXI.Texture.WHITE, "bullet upgrade", 50, 50, 0x000000, 0, updateSquare1.position.y + 100);
     let updateSquare3 = new Effects(PIXI.Texture.WHITE, "BOSS calling", 50, 50, 0x000000, 0, updateSquare2.position.y + 100);
 
+    let update1Text = new PIXI.Text('//gun upgrade');
+    update1Text.position.set(updateSquare1.position.x + updateSquare1.width + 25, updateSquare1.position.y);
+
+    let update2Text = new PIXI.Text('//bullet upgrade');
+    update2Text.position.set(updateSquare2.position.x + updateSquare2.width + 25, updateSquare2.position.y);
+
+    let update3Text = new PIXI.Text('//BOSS calling');
+    update3Text.position.set(updateSquare3.position.x + updateSquare3.width + 25, updateSquare3.position.y);
+
+
     updatePanel.addChild(
         updateSquare1,
         updateSquare2,
-        updateSquare3
+        updateSquare3,
+        update1Text,
+        update2Text,
+        update3Text,
     );
     updatePanel.position.set(25, app.screen.height / 2 - updatePanel.height / 2);
 
 
     //effects panel
     let effectSquare1 = new Effects(PIXI.Texture.WHITE, "freezing", 50, 50, 0xFF0000, 0, 0);
+    effectSquare1.on("pointerdown", () => freese());
+
     let effectSquare2 = new Effects(PIXI.Texture.WHITE, "lockdown", 50, 50, 0x0000FF, effectSquare1.position.x + 100, 0);
     let effectSquare3 = new Effects(PIXI.Texture.WHITE, "high effective gun", 50, 50, 0x00FF00, effectSquare2.position.x + 100, 0);
     let effectSquare4 = new Effects(PIXI.Texture.WHITE, "nuclear bomb", 50, 50, 0xd81fdd, effectSquare3.position.x + 100, 0);
@@ -207,6 +222,11 @@ function gameLoop(delta: PIXI.Ticker) {
 
 }
 
+function freese() {
+    dragons.forEach(dragon => {
+        dragon.freeze();
+    });
+}
 
 function rectsIntersect(a: FishSpine | FishSprite, b: PIXI.Sprite) {
     // console.log(a);
