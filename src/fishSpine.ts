@@ -79,16 +79,20 @@ export class FishSpine extends PIXI.spine.Spine {
         }
 
         if (this.hp <= 0) {
-            let explosion = new PIXI.AnimatedSprite(this.explosionTextures);
-            explosion.loop = false;
-            explosion.scale.set(2, 2);
-            explosion.anchor.set(.5, .5);
-            explosion.position.copyFrom(this.position);
-            explosion.gotoAndPlay(0);
-            this.app.stage.addChild(explosion);
-            explosion.onComplete = () => {
-                this.app.stage.removeChild(explosion);
-            }
+            this.visible = false;
+        }
+    }
+
+    dead() {
+        let explosion = new PIXI.AnimatedSprite(this.explosionTextures);
+        explosion.loop = false;
+        explosion.scale.set(2, 2);
+        explosion.anchor.set(.5, .5);
+        explosion.position.copyFrom(this.position);
+        explosion.gotoAndPlay(0);
+        this.app.stage.addChild(explosion);
+        explosion.onComplete = () => {
+            this.app.stage.removeChild(explosion);
         }
     }
 

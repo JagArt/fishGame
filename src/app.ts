@@ -10,11 +10,6 @@ import { Effects } from "./effects";
 const screenSize = { width: 1280, height: 720 };
 
 let app: PIXI.Application;
-// let dragon: FishSpine;
-let player1: Player;
-let player2: Player;
-let player3: Player;
-let player4: Player;
 
 let gameScene: PIXI.Container;
 let updatePanel: PIXI.Container;
@@ -23,7 +18,7 @@ let effectsPanel: PIXI.Container;
 let visible: boolean;
 
 const dragons: FishSpine[] = [];
-const players: FishSprite[] = [];
+const players: Player[] = [];
 
 // const bezier = new CustomGraphics(new CustomGraphicsGeometry());
 
@@ -74,30 +69,29 @@ function doneLoading() {
     bg.height = screenSize.height
     bg.name = "background";
 
-    player1 = new Player(app, app.loader.resources.gun_vip1.texture, "test player", 1, app.loader.resources.bullet.texture, 99999, 100, 5);
-    player2 = new Player(app, app.loader.resources.gun_vip1.texture, "test player", 2, app.loader.resources.bullet.texture, 99999, 100, 5);
-    player3 = new Player(app, app.loader.resources.gun_vip1.texture, "test player", 3, app.loader.resources.bullet.texture, 99999, 100, 5);
-    player4 = new Player(app, app.loader.resources.gun_vip1.texture, "test player", 4, app.loader.resources.bullet.texture, 99999, 100, 5);
+    players.push(new Player(app, app.loader.resources.gun_vip1.texture, "test player1", 1, app.loader.resources.bullet.texture, 99999, 100, 5));
+    // players.push(new Player(app, app.loader.resources.gun_vip1.texture, "test player2", 2, app.loader.resources.bullet.texture, 99999, 100, 5));
+    // players.push(new Player(app, app.loader.resources.gun_vip1.texture, "test player3", 3, app.loader.resources.bullet.texture, 99999, 100, 5));
+    // players.push(new Player(app, app.loader.resources.gun_vip1.texture, "test player4", 4, app.loader.resources.bullet.texture, 99999, 100, 5));
 
 
     dragons.push(new FishSpine(app, 0, 0, app.loader.resources.dragon.spineData, "Dragon[0,0] sin", 100, 1, Routes.sin));
-    dragons.push(new FishSpine(app, 0, 0, app.loader.resources.dragon.spineData, "Dragon[0,0]", 100, 1, Routes.linear));
-    dragons.push(new FishSpine(app, screenSize.width, screenSize.height, app.loader.resources.dragon.spineData, "Dragon[>, >]", 100, 1, Routes.linear, Directions.fromLeftToRight));
-    dragons.push(new FishSpine(app, 500, 0, app.loader.resources.dragon.spineData, "Dragon[500, 0]", 100, 1, Routes.linear, Directions.fromLeftToRight));
-    dragons.push(new FishSpine(app, screenSize.width, 200, app.loader.resources.dragon.spineData, "Dragon[>, 200]", 100, 1, Routes.linear, Directions.fromLeftToRight));
+    // dragons.push(new FishSpine(app, 0, 0, app.loader.resources.dragon.spineData, "Dragon[0,0]", 100, 1, Routes.linear));
+    // dragons.push(new FishSpine(app, screenSize.width, screenSize.height, app.loader.resources.dragon.spineData, "Dragon[>, >]", 100, 1, Routes.linear, Directions.fromLeftToRight));
+    // dragons.push(new FishSpine(app, 500, 0, app.loader.resources.dragon.spineData, "Dragon[500, 0]", 100, 1, Routes.linear, Directions.fromLeftToRight));
+    // dragons.push(new FishSpine(app, screenSize.width, 200, app.loader.resources.dragon.spineData, "Dragon[>, 200]", 100, 1, Routes.linear, Directions.fromLeftToRight));
 
 
     gameScene.addChild(
         bg,
-        player1,
-        player2,
-        player3,
-        player4,
-        // dragon
     );
 
-    dragons.forEach(drag => {
-        gameScene.addChild(drag);
+    players.forEach(player => {
+        gameScene.addChild(player);
+    });
+
+    dragons.forEach(dragon => {
+        gameScene.addChild(dragon);
     });
 
 
@@ -184,83 +178,39 @@ function doneLoading() {
 
 function gameLoop(delta: PIXI.Ticker) {
     // fishSprite.go();
+    // console.log(players);
+    // console.log(dragons);
 
-    // for (var b = 0; b < player1.bullets.length; b++) {
-    //     if (player1.bullets.length > 0) {
-    //         if (rectsIntersect(dragon, player1.bullets[b])) {
-    //             player1.bullets[b].hit();
-    //             player1.bullets.splice(player1.bullets.indexOf(player1.bullets[b]), 1);
-    //             dragon.hp -= player1.damage;
-    //             if (dragon.hp <= 0) {
-    //                 player1.credits += 1000;
-    //             }
-    //             dragon.hit();
-    //         } else {
-    //         }
-    //     } else {
-    //         console.log('has not bullets');
+    for (var p = 0; p < players.length; p++) {
+        for (var b = 0; b < players[p].bullets.length; b++) {
+            if (players[p].bullets.length > 0) {
+                for (var d = 0; d < dragons.length; d++)
+                    // console.log(dragons[d]);
+                    // console.log(players[p].bullets[b]);
+                    if (rectsIntersect(dragons[d], players[p].bullets[b])) {
+                        players[p].bullets[b].hit();
+                        players[p].bullets.splice(players[p].bullets.indexOf(players[p].bullets[b]), 1);
+                        dragons[d].hp -= players[p].damage;
+                        dragons[d].hit();
+                        if (dragons[d].hp <= 0) {
+                            players[p].credits += 1000;
+                            dragons[d].dead();
+                            dragons.splice(dragons.indexOf(dragons[d], 1));
+                        }
+                    }
+            } else {
+                console.log('has not bullets');
+            }
 
-    //     }
-    // }
-
-    // for (var b = 0; b < player4.bullets.length; b++) {
-    //     if (player4.bullets.length > 0) {
-    //         if (rectsIntersect(dragon, player4.bullets[b])) {
-    //             player4.bullets[b].hit();
-    //             player4.bullets.splice(player4.bullets.indexOf(player4.bullets[b]), 1);
-    //             dragon.hp -= player4.damage;
-    //             if (dragon.hp <= 0) {
-    //                 player4.credits += 1000;
-    //             }
-    //             dragon.hit();
-    //         } else {
-    //         }
-    //     } else {
-    //         console.log('has not bullets');
-
-    //     }
-    // }
-
-    // for (var b = 0; b < player2.bullets.length; b++) {
-    //     if (player2.bullets.length > 0) {
-    //         if (rectsIntersect(dragon, player2.bullets[b])) {
-    //             player2.bullets[b].hit();
-    //             player2.bullets.splice(player2.bullets.indexOf(player2.bullets[b]), 1);
-    //             dragon.hp -= player2.damage;
-    //             if (dragon.hp <= 0) {
-    //                 player2.credits += 1000;
-    //             }
-    //             dragon.hit();
-    //         } else {
-    //         }
-    //     } else {
-    //         console.log('has not bullets');
-
-    //     }
-    // }
-
-    // for (var b = 0; b < player3.bullets.length; b++) {
-    //     if (player3.bullets.length > 0) {
-    //         if (rectsIntersect(dragon, player3.bullets[b])) {
-    //             player3.bullets[b].hit();
-    //             player3.bullets.splice(player3.bullets.indexOf(player3.bullets[b]), 1);
-    //             dragon.hp -= player3.damage;
-    //             if (dragon.hp <= 0) {
-    //                 player3.credits += 1000;
-    //             }
-    //             dragon.hit();
-    //         } else {
-    //         }
-    //     } else {
-    //         console.log('has not bullets');
-
-    //     }
-    // }
+        }
+    }
 
 }
 
 
-function rectsIntersect(a: FishSpine | FishSprite, b: PIXI.Sprite): boolean {
+function rectsIntersect(a: FishSpine | FishSprite, b: PIXI.Sprite) {
+    // console.log(a);
+    // console.log(b);
     let aBox = a.getBounds();
     let bBox = b.getBounds();
 

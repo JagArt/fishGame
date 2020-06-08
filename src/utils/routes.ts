@@ -51,12 +51,9 @@ export function sine_wave(sprite: FishSpine) {
 
 export function linear(sprite: FishSpine) {
     let prevPosition = { x: sprite.position.x, y: sprite.position.y };
-    console.log(sprite.position.x + ", " + sprite.position.y);
-    console.log(sprite.name + ": " + fishDirection(sprite).dx + ", " + fishDirection(sprite).dy);
     sprite.position.x += sprite.speed * fishDirection(sprite).dx;
     sprite.position.y += sprite.speed * fishDirection(sprite).dy;
     sprite.rotation = rotateToPoint(sprite.x, sprite.y, prevPosition.x, prevPosition.y);
-
 }
 
 
