@@ -12,11 +12,13 @@ const screenSize = { width: 1280, height: 720 };
 
 let app: PIXI.Application;
 
+let loadScreen: PIXI.Container;
 let gameScene: PIXI.Container;
 let updatePanel: PIXI.Container;
 let effectsPanel: PIXI.Container;
 
 let visible: boolean;
+var load: boolean = true;
 
 const dragons: FishSpine[] = [];
 const players: Player[] = [];
@@ -42,14 +44,60 @@ window.onload = function () {
         .add("bg", "images/bg/AnglerKingdom-background1.jpg")
         .add("player", "images/player.png")
         .add("cursor", "images/cursor.png")
+        .add("gun_vip0", "images/guns_png/gun_vip0.png")
         .add("gun_vip1", "images/guns_png/gun_vip1.png")
+        .add("gun_vip2", "images/guns_png/gun_vip2.png")
+        .add("gun_vip3", "images/guns_png/gun_vip3.png")
+        .add("gun_vip4", "images/guns_png/gun_vip4.png")
+        .add("gun_vip5", "images/guns_png/gun_vip5.png")
+        .add("gun_vip6", "images/guns_png/gun_vip6.png")
+        .add("gun_vip7", "images/guns_png/gun_vip7.png")
+        .add("gun_vip8", "images/guns_png/gun_vip8.png")
+        .add("gun_vip9", "images/guns_png/gun_vip9.png")
         .add("bullet", "images/bullets/0_bullet.png")
         .add("explosion", "images/spritesheets/mc.json")
         .add("dragon", "images/dragon/export/dragon-ess.json");
 
+    app.loader.onLoad.add(onLoad);
     app.loader.onComplete.add(doneLoading);
 
     app.loader.load();
+}
+
+function onLoad() {
+    console.log(app.loader.progress + " % loaded");
+
+    var progress = 500 * app.loader.progress / 100;
+
+    document.body.appendChild(app.view);
+    loadScreen = new PIXI.Container();
+
+    let bg = new PIXI.Sprite(PIXI.Texture.WHITE);
+    bg.tint = 0x000000;
+    bg.width = screenSize.width;
+    bg.height = screenSize.height;
+
+    let loadProgressBar = new PIXI.Container();
+    // loadProgressBar.position.set(screenSize.width / 2, screenSize.height / 2);
+
+    let innerBar = new PIXI.Graphics();
+    innerBar.beginFill(0xFF0000);
+    innerBar.drawRect(loadProgressBar.position.x, loadProgressBar.position.y, 500, 20);
+    innerBar.endFill();
+
+    let outerBar = new PIXI.Graphics();
+    innerBar.beginFill(0x00FF00);
+    innerBar.drawRect(loadProgressBar.position.x, loadProgressBar.position.y, progress, 20);
+    innerBar.endFill();
+
+
+    loadScreen.addChild(
+        bg,
+        loadProgressBar,
+        innerBar,
+        outerBar
+    );
+    app.stage.addChild(loadScreen);
 }
 
 function doneLoading() {
