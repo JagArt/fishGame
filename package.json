@@ -20,9 +20,9 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
+    "eventemitter3-timer": "^1.0.1",
     "pixi-sound": "^3.0.4",
-    "pixi-spine": "^2.1.8",
-    "pixi-timer": "^1.0.1"
+    "pixi-spine": "^2.1.8"
   },
   "keywords": [],
   "description": ""

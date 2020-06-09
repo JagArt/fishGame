@@ -124,6 +124,13 @@ export class FishSpine extends PIXI.spine.Spine {
         // this.state.setAnimation(0, "flying", false);
         this.autoUpdate = false;
     }
+
+    unfreeze() {
+        this.isFreeze = false;
+        // let track = this.state.tac
+        // this.state.setAnimation(0, "flying", false);
+        this.autoUpdate = true;
+    }
 }
 
 

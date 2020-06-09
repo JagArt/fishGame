@@ -1,6 +1,8 @@
 import * as PIXI from "pixi.js"
 window.PIXI = PIXI;
 import "pixi-spine";
+import { Timer, TimerManager } from "eventemitter3-timer";
+
 import { FishSprite } from "./fishSprite";
 import { Player } from "./player";
 import { Routes, Directions } from "./utils/routes";
@@ -237,6 +239,7 @@ function doneLoading() {
     app.start();
 
     app.ticker.add(delta => gameLoop(delta));
+    app.ticker.add(() => Timer.timerManager.update(app.ticker.elapsedMS));
 }
 
 function gameLoop(delta: PIXI.Ticker) {
@@ -276,7 +279,13 @@ function freese() {
         dragon.freeze();
     });
 
-    // var timer = PIXI.tim
+    var timer = new Timer(2000);
+    timer.on("end", () => {
+        dragons.forEach(dragon => {
+            dragon.unfreeze();
+        });
+    });
+    timer.start();
 }
 
 function unfreese() {
