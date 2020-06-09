@@ -6,7 +6,6 @@ import { Player } from "./player";
 import { Routes, Directions } from "./utils/routes";
 import { FishSpine } from "./fishSpine";
 import { Effects } from "./effects";
-// import "pixi-timer";
 
 const screenSize = { width: 1280, height: 720 };
 
@@ -246,8 +245,8 @@ function gameLoop(delta: PIXI.Ticker) {
     // console.log(dragons);
 
     for (var p = 0; p < players.length; p++) {
-        for (var b = 0; b < players[p].bullets.length; b++) {
-            if (players[p].bullets.length > 0) {
+        if (players[p].bullets.length > 0) {
+            for (var b = 0; b < players[p].bullets.length; b++) {
                 for (var d = 0; d < dragons.length; d++)
                     // console.log(dragons[d]);
                     // console.log(players[p].bullets[b]);
@@ -262,10 +261,11 @@ function gameLoop(delta: PIXI.Ticker) {
                             dragons.splice(dragons.indexOf(dragons[d], 1));
                         }
                     }
-            } else {
-                console.log('has not bullets');
-            }
 
+
+            }
+        } else {
+            console.log('has not bullets');
         }
     }
 
@@ -275,11 +275,22 @@ function freese() {
     dragons.forEach(dragon => {
         dragon.freeze();
     });
+
+    // var timer = PIXI.tim
+}
+
+function unfreese() {
+    dragons.forEach(dragon => {
+        dragon.freeze();
+    });
 }
 
 function rectsIntersect(a: FishSpine | FishSprite, b: PIXI.Sprite) {
     // console.log(a);
     // console.log(b);
+
+    if (a === undefined && b === undefined) return false;
+
     let aBox = a.getBounds();
     let bBox = b.getBounds();
 
