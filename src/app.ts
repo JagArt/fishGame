@@ -56,7 +56,8 @@ window.onload = function () {
         .add("gun_vip8", "images/guns_png/gun_vip8.png")
         .add("gun_vip9", "images/guns_png/gun_vip9.png")
         .add("bullet", "images/bullets/0_bullet.png")
-        .add("explosion", "images/spritesheets/mc.json")
+        .add("explosion", "images/effects/spritesheets/mc.json")
+        .add("snowflake", "images/effects/snowflake.png")
         .add("dragon", "images/dragon/export/dragon-ess.json");
 
     app.loader.onLoad.add(onLoad);

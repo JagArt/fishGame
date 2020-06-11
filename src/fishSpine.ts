@@ -19,6 +19,8 @@ export class FishSpine extends PIXI.spine.Spine {
 
     explosionTextures: PIXI.Texture[] = [];
 
+    snowflake: PIXI.Sprite;
+
     constructor(app: PIXI.Application, x: number = 0, y: number = 0, skeletonData: PIXI.spine.core.SkeletonData, name: string = "none", hp: number = 100, speed: number = 5, route: Routes, direction?: Directions) {
         super(skeletonData);
         this.app = app;
@@ -53,6 +55,11 @@ export class FishSpine extends PIXI.spine.Spine {
             const texture = PIXI.Texture.from(`Explosion_Sequence_A ${i + 1}.png`);
             this.explosionTextures.push(texture);
         }
+
+        this.snowflake = new PIXI.Sprite(this.app.loader.resources.snowflake.texture);
+        this.snowflake.anchor.set(.5, .5);
+        this.snowflake.width = this.width + 50;
+        this.snowflake.height = this.height + 50;
         // let bezier = new CustomGraphics2();
         // bezier.lineStyle(5, 0xAA0000, 1);
         // bezier.bezierCurveTo(100, 500, 200, 500, 600, 0);
@@ -120,16 +127,17 @@ export class FishSpine extends PIXI.spine.Spine {
 
     freeze() {
         this.isFreeze = true;
-        // let track = this.state.tac
-        // this.state.setAnimation(0, "flying", false);
         this.autoUpdate = false;
+
+        this.snowflake.position.copyFrom(this.position);
+        this.app.stage.addChild(this.snowflake);
     }
 
     unfreeze() {
         this.isFreeze = false;
-        // let track = this.state.tac
-        // this.state.setAnimation(0, "flying", false);
         this.autoUpdate = true;
+
+        this.app.stage.removeChild(this.snowflake);
     }
 }
 
