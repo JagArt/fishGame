@@ -62,13 +62,12 @@ export class Player extends PIXI.Container {
 
         this.addChild(this.sprite);
 
-        this.app.stage.on("mousedown", (e: any) => {
-            this.shootSound.play();
-            this.shoot(this.sprite.rotation, {
-                x: this.sprite.position.x + Math.cos(this.sprite.rotation) * 75,
-                y: this.sprite.position.y + Math.sin(this.sprite.rotation) * 75
-            });
-        });
+        // this.app.stage.on("mousedown", () => {
+        //     this.shoot(this.sprite.rotation, {
+        //         x: this.sprite.position.x + Math.cos(this.sprite.rotation) * 75,
+        //         y: this.sprite.position.y + Math.sin(this.sprite.rotation) * 75
+        //     });
+        // });
 
 
         this.addChild(this.scoreContainer);
@@ -93,8 +92,17 @@ export class Player extends PIXI.Container {
 
     }
 
-    shoot(rotation: number, startPosition: { x: number, y: number }) {
-        let bullet = new Bullet(this.app, this.bulletTex, startPosition.x, startPosition.y, rotation, 10);
+    // shoot(rotation: number, startPosition: { x: number, y: number }) {
+    //     this.shootSound.play();
+    //     let bullet = new Bullet(this.app, this.bulletTex, startPosition.x, startPosition.y, rotation, 10);
+    //     this.app.stage.addChild(bullet);
+    //     this.credits -= this.damage;
+    //     this.bullets.push(bullet);
+    // }
+    shoot() {
+        console.log('shoot');
+        this.shootSound.play();
+        let bullet = new Bullet(this.app, this.bulletTex, this.sprite.position.x + Math.cos(this.sprite.rotation) * 75, this.sprite.position.y + Math.sin(this.sprite.rotation) * 75, this.sprite.rotation, 10);
         this.app.stage.addChild(bullet);
         this.credits -= this.damage;
         this.bullets.push(bullet);

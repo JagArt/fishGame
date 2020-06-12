@@ -24,6 +24,8 @@ var load: boolean = true;
 const dragons: FishSpine[] = [];
 const players: Player[] = [];
 
+let mouseOnEffects: boolean = false;
+
 // const bezier = new CustomGraphics(new CustomGraphicsGeometry());
 
 window.onload = function () {
@@ -125,6 +127,17 @@ function doneLoading() {
     // players.push(new Player(app, app.loader.resources.gun_vip1.texture, "test player3", 3, app.loader.resources.bullet.texture, 99999, 100, 5));
     // players.push(new Player(app, app.loader.resources.gun_vip1.texture, "test player4", 4, app.loader.resources.bullet.texture, 99999, 100, 5));
 
+    app.stage
+        .on("mousedown", () => {
+            if (!mouseOnEffects) {
+                players.forEach(player => {
+                    player.shoot();
+                });
+            }
+        });
+
+
+
 
     dragons.push(new FishSpine(app, 0, 0, app.loader.resources.dragon.spineData, "Dragon[0,0] sin", 100, 1, Routes.sin));
     dragons.push(new FishSpine(app, 0, 0, app.loader.resources.dragon.spineData, "Dragon[0,0]", 100, 1, Routes.linear));
@@ -148,8 +161,23 @@ function doneLoading() {
 
     // update panel 
     let updateSquare1 = new Effects(PIXI.Texture.WHITE, "gun upgrade", 50, 50, 0x000000, 0, 0);
+    updateSquare1
+        .on("pointerdown", () => { })
+        .on("pointerover", () => { mouseOnEffects = true })
+        .on("pointerout", () => { mouseOnEffects = false });
+
     let updateSquare2 = new Effects(PIXI.Texture.WHITE, "bullet upgrade", 50, 50, 0x000000, 0, updateSquare1.position.y + 100);
+    updateSquare2
+        .on("pointerdown", () => { })
+        .on("pointerover", () => { mouseOnEffects = true })
+        .on("pointerout", () => { mouseOnEffects = false });
+
     let updateSquare3 = new Effects(PIXI.Texture.WHITE, "BOSS calling", 50, 50, 0x000000, 0, updateSquare2.position.y + 100);
+    updateSquare3
+        .on("pointerdown", () => { })
+        .on("pointerover", () => { mouseOnEffects = true })
+        .on("pointerout", () => { mouseOnEffects = false });
+
 
     let update1Text = new PIXI.Text('//gun upgrade');
     update1Text.position.set(updateSquare1.position.x + updateSquare1.width + 25, updateSquare1.position.y);
@@ -174,12 +202,34 @@ function doneLoading() {
 
     //effects panel
     let effectSquare1 = new Effects(PIXI.Texture.WHITE, "freezing", 50, 50, 0xFF0000, 0, 0);
-    effectSquare1.on("pointerdown", () => freese());
+    effectSquare1
+        .on("pointerdown", () => freese())
+        .on("pointerover", () => { mouseOnEffects = true })
+        .on("pointerout", () => { mouseOnEffects = false });
 
     let effectSquare2 = new Effects(PIXI.Texture.WHITE, "lockdown", 50, 50, 0x0000FF, effectSquare1.position.x + 100, 0);
+    effectSquare2
+        .on("pointerdown", () => { })
+        .on("pointerover", () => { mouseOnEffects = true })
+        .on("pointerout", () => { mouseOnEffects = false });
+
     let effectSquare3 = new Effects(PIXI.Texture.WHITE, "high effective gun", 50, 50, 0x00FF00, effectSquare2.position.x + 100, 0);
+    effectSquare3
+        .on("pointerdown", () => { })
+        .on("pointerover", () => { mouseOnEffects = true })
+        .on("pointerout", () => { mouseOnEffects = false });
+
     let effectSquare4 = new Effects(PIXI.Texture.WHITE, "nuclear bomb", 50, 50, 0xd81fdd, effectSquare3.position.x + 100, 0);
+    effectSquare4
+        .on("pointerdown", () => { })
+        .on("pointerover", () => { mouseOnEffects = true })
+        .on("pointerout", () => { mouseOnEffects = false });
+
     let effectSquare5 = new Effects(PIXI.Texture.WHITE, "black hole", 50, 50, 0xf9ff83, effectSquare4.position.x + 100, 0);
+    effectSquare5
+        .on("pointerdown", () => { })
+        .on("pointerover", () => { mouseOnEffects = true })
+        .on("pointerout", () => { mouseOnEffects = false });
 
     effectsPanel.addChild(
         effectSquare1,
@@ -276,17 +326,22 @@ function gameLoop(delta: PIXI.Ticker) {
 }
 
 function freese() {
-    dragons.forEach(dragon => {
-        dragon.freeze();
-    });
 
-    var timer = new Timer(2000);
-    timer.on("end", () => {
+    if (players[0].credits >= 10000) {
+        players[0].credits -= 10000;
+
         dragons.forEach(dragon => {
-            dragon.unfreeze();
+            dragon.freeze();
         });
-    });
-    timer.start();
+
+        var timer = new Timer(2000);
+        timer.on("end", () => {
+            dragons.forEach(dragon => {
+                dragon.unfreeze();
+            });
+        });
+        timer.start();
+    }
 }
 
 function unfreese() {
