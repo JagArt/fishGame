@@ -23,7 +23,7 @@ export class Player extends PIXI.Container {
     gemsText: PIXI.Text;
     shootSound: sound.Sound = sound.Sound.from('sounds/Shotgun+2.mp3');
 
-    constructor(app: PIXI.Application, texture: PIXI.Texture, name: string = "none", screenPosition: number, bulletTex: PIXI.Texture, credits: number, gems: number, damage: number) {
+    constructor(app: PIXI.Application, name: string = "none", screenPosition: number, credits: number, gems: number, damage: number) {
         super();
         this.app = app;
         // this.position.copyFrom(this.getPosition(screenPosition));
@@ -35,12 +35,13 @@ export class Player extends PIXI.Container {
 
 
 
-        this.bulletTex = bulletTex;
+        this.bulletTex = PIXI.Texture.from("bullet");
         this.damage = damage;
 
         this.shootSound.volume = 0.01;
 
-        this.sprite = PIXI.Sprite.from(texture);
+        // this.sprite = PIXI.Sprite.from(texture);
+        this.sprite = new PIXI.Sprite(PIXI.Texture.from("gun_vip1"));
         this.sprite.anchor.set(0.5);
         this.sprite.name = name;
         this.sprite.width = 150;

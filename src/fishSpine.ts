@@ -56,7 +56,7 @@ export class FishSpine extends PIXI.spine.Spine {
             this.explosionTextures.push(texture);
         }
 
-        this.snowflake = new PIXI.Sprite(this.app.loader.resources.snowflake.texture);
+        this.snowflake = new PIXI.Sprite(PIXI.Texture.from("snowflake"));
         this.snowflake.anchor.set(.5, .5);
         this.snowflake.width = this.width + 50;
         this.snowflake.height = this.height + 50;
