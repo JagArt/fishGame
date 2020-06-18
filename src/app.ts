@@ -37,6 +37,8 @@ export class Game {
             }
         );
 
+        document.body.appendChild(this.app.view)
+
         this.visible = true;
 
         this.gameScene = new PIXI.Container();
@@ -110,8 +112,9 @@ export class Game {
 
     private onLoadComplete() {
         // var animation = new PIXI.spine.Spine(resources.spineCharacter.spineData)
+        this.app.stage.removeChildren(0);
+
         console.log(this.app);
-        document.body.appendChild(this.app.view)
 
         // const defaultIcon = "url('https://flyclipart.com/thumb2/game-play-cursor-pointer-shooter-png-icon-free-download-167975.png'),auto";
 
@@ -122,7 +125,7 @@ export class Game {
         bg.height = this.screenSize.height
         bg.name = "background";
 
-        this.players.push(new Player(this.app, "test player1", 1, 99999, 100, 5));
+        this.players.push(new Player(this.app, "test player1", 1, 99999, 100));
         // players.push(new Player(app, app.loader.resources.gun_vip1.texture, "test player2", 2, app.loader.resources.bullet.texture, 99999, 100, 5));
         // players.push(new Player(app, app.loader.resources.gun_vip1.texture, "test player3", 3, app.loader.resources.bullet.texture, 99999, 100, 5));
         // players.push(new Player(app, app.loader.resources.gun_vip1.texture, "test player4", 4, app.loader.resources.bullet.texture, 99999, 100, 5));
@@ -139,8 +142,8 @@ export class Game {
 
 
 
-        this.dragons.push(new FishSpine(this.app, 0, 0, PIXI.Loader.shared.resources.dragon.spineData, "Dragon[0,0] sin", 100, 1, Routes.sin));
-        this.dragons.push(new FishSpine(this.app, 0, 0, PIXI.Loader.shared.resources.dragon.spineData, "Dragon[0,0]", 100, 1, Routes.linear));
+        this.dragons.push(new FishSpine(this.app, 0, 0, PIXI.Loader.shared.resources.dragon.spineData, "Dragon1[0,0] sin", 100, 1, Routes.sin));
+        this.dragons.push(new FishSpine(this.app, 0, 0, PIXI.Loader.shared.resources.dragon.spineData, "Dragon2[0,0]", 100, 1, Routes.linear));
         // // dragons.push(new FishSpine(app, screenSize.width, screenSize.height, app.loader.resources.dragon.spineData, "Dragon[>, >]", 100, 1, Routes.linear, Directions.fromLeftToRight));
         // // dragons.push(new FishSpine(app, 500, 0, app.loader.resources.dragon.spineData, "Dragon[500, 0]", 100, 1, Routes.linear, Directions.fromLeftToRight));
         // // dragons.push(new FishSpine(app, screenSize.width, 200, app.loader.resources.dragon.spineData, "Dragon[>, 200]", 100, 1, Routes.linear, Directions.fromLeftToRight));
@@ -265,31 +268,13 @@ export class Game {
 
     private gameLoop(delta: PIXI.Ticker) {
 
-        for (var p = 0; p < this.players.length; p++) {
-            if (this.players[p].bullets.length > 0) {
-                for (var b = 0; b < this.players[p].bullets.length; b++) {
-                    for (var d = 0; d < this.dragons.length; d++)
-                        // console.log(dragons[d]);
-                        // console.log(players[p].bullets[b]);
-                        if (this.rectsIntersect(this.dragons[d], this.players[p].bullets[b])) {
-                            this.players[p].bullets[b].hit();
-                            this.players[p].bullets.splice(this.players[p].bullets.indexOf(this.players[p].bullets[b]), 1);
-                            this.dragons[d].hp -= this.players[p].damage;
-                            this.dragons[d].hit();
-                            if (this.dragons[d].hp <= 0) {
-                                this.players[p].credits += 1000;
-                                this.dragons[d].dead();
-                                this.dragons.splice(this.dragons.indexOf(this.dragons[d], 1));
-                            }
-                        }
-
-
-                }
-            } else {
-                console.log('has not bullets');
-            }
-        }
-
+        this.dragons.forEach(dragon => {
+            this.players.forEach(player => {
+                player.checkCollapse(dragon, () => {
+                    this.dragons.splice(this.dragons.indexOf(dragon), 1);
+                });
+            })
+        });
     }
 
     private freese() {
@@ -307,21 +292,6 @@ export class Game {
                 }
             });
         }
-    }
-
-    private rectsIntersect(a: FishSpine | FishSprite, b: PIXI.Sprite) {
-        // console.log(a);
-        // console.log(b);
-
-        if (a === undefined || b === undefined) return false;
-
-        let aBox = a.getBounds();
-        let bBox = b.getBounds();
-
-        return aBox.x + aBox.width - 50 > bBox.x &&
-            aBox.x + 50 < bBox.x + bBox.width &&
-            aBox.y + aBox.height - 50 > bBox.y &&
-            aBox.y + 50 < bBox.y + bBox.height;
     }
 }
 

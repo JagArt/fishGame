@@ -2,6 +2,8 @@ import * as PIXI from "pixi.js"
 import { rotateToPoint } from "./utils/rotateToPointController";
 import { Bullet } from "./bullet";
 import sound from 'pixi-sound'
+import { FishSpine } from "./fishSpine";
+import { rectsIntersect } from "./utils/collapsController";
 
 export class Player extends PIXI.Container {
     app: PIXI.Application;
@@ -23,10 +25,10 @@ export class Player extends PIXI.Container {
     gemsText: PIXI.Text;
     shootSound: sound.Sound = sound.Sound.from('sounds/Shotgun+2.mp3');
 
-    constructor(app: PIXI.Application, name: string = "none", screenPosition: number, credits: number, gems: number, damage: number) {
+    constructor(app: PIXI.Application, name: string = "none", screenPosition: number, credits: number, gems: number) {
         super();
         this.app = app;
-        // this.position.copyFrom(this.getPosition(screenPosition));
+
         this.credits = credits;
         this.gems = gems;
 
@@ -36,11 +38,10 @@ export class Player extends PIXI.Container {
 
 
         this.bulletTex = PIXI.Texture.from("bullet");
-        this.damage = damage;
+        this.damage = 20;
 
         this.shootSound.volume = 0.01;
 
-        // this.sprite = PIXI.Sprite.from(texture);
         this.sprite = new PIXI.Sprite(PIXI.Texture.from("gun_vip1"));
         this.sprite.anchor.set(0.5);
         this.sprite.name = name;
@@ -62,14 +63,6 @@ export class Player extends PIXI.Container {
         }
 
         this.addChild(this.sprite);
-
-        // this.app.stage.on("mousedown", () => {
-        //     this.shoot(this.sprite.rotation, {
-        //         x: this.sprite.position.x + Math.cos(this.sprite.rotation) * 75,
-        //         y: this.sprite.position.y + Math.sin(this.sprite.rotation) * 75
-        //     });
-        // });
-
 
         this.addChild(this.scoreContainer);
 
@@ -93,15 +86,8 @@ export class Player extends PIXI.Container {
 
     }
 
-    // shoot(rotation: number, startPosition: { x: number, y: number }) {
-    //     this.shootSound.play();
-    //     let bullet = new Bullet(this.app, this.bulletTex, startPosition.x, startPosition.y, rotation, 10);
-    //     this.app.stage.addChild(bullet);
-    //     this.credits -= this.damage;
-    //     this.bullets.push(bullet);
-    // }
     shoot() {
-        console.log('shoot');
+        // console.log('shoot');
         this.shootSound.play();
         let bullet = new Bullet(this.app, this.bulletTex, this.sprite.position.x + Math.cos(this.sprite.rotation) * 75, this.sprite.position.y + Math.sin(this.sprite.rotation) * 75, this.sprite.rotation, 10);
         this.app.stage.addChild(bullet);
@@ -134,6 +120,22 @@ export class Player extends PIXI.Container {
 
     status() {
         return "Name is: " + this.name;
+    }
+
+    checkCollapse(fish: FishSpine, callback: Function) {
+        this.bullets.forEach(bullet => {
+            if (rectsIntersect(fish, bullet)) {
+                console.log('hit');
+                bullet.hit();
+                this.bullets.splice(this.bullets.indexOf(bullet), 1);
+                fish.hit(this.damage);
+                if (fish.hp <= 0) {
+                    this.credits += 1000;
+                    fish.dead();
+                    callback();
+                }
+            };
+        });
     }
 
     getScoreContainer(): PIXI.Container {

@@ -96,6 +96,7 @@ export class FishSpine extends PIXI.spine.Spine {
     }
 
     dead() {
+        console.log(this.name + " is dead");
         let explosion = new PIXI.AnimatedSprite(this.explosionTextures);
         explosion.loop = false;
         explosion.scale.set(2, 2);
@@ -116,8 +117,9 @@ export class FishSpine extends PIXI.spine.Spine {
         return super.getBounds();
     }
 
-    hit() {
+    hit(damage: number) {
         this.hasHit = true;
+        this.hp -= damage;
         console.log(this.name + ": " + this.hp + ' hp left');
     }
 
