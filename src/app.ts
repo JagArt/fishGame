@@ -5,7 +5,7 @@ import { Timer, TimerManager } from "eventemitter3-timer";
 
 import { FishSprite } from "./fishSprite";
 import { Player } from "./player";
-import { Routes, Directions } from "./utils/routes";
+import { Route, Directions } from "./utils/routes";
 import { FishSpine } from "./fishSpine";
 import { Effects } from "./effects";
 
@@ -142,8 +142,8 @@ export class Game {
 
 
 
-        this.dragons.push(new FishSpine(this.app, 0, 0, PIXI.Loader.shared.resources.dragon.spineData, "Dragon1[0,0] sin", 100, 1, Routes.sin));
-        this.dragons.push(new FishSpine(this.app, 0, 0, PIXI.Loader.shared.resources.dragon.spineData, "Dragon2[0,0]", 100, 1, Routes.linear));
+        this.dragons.push(new FishSpine(this.app, 0, 0, PIXI.Loader.shared.resources.dragon.spineData, "Dragon1[0,0] sin", 100, 1, Route.sin));
+        this.dragons.push(new FishSpine(this.app, 50, 0, PIXI.Loader.shared.resources.dragon.spineData, "Dragon2[0,0]", 100, 1, Route.linear));
         // // dragons.push(new FishSpine(app, screenSize.width, screenSize.height, app.loader.resources.dragon.spineData, "Dragon[>, >]", 100, 1, Routes.linear, Directions.fromLeftToRight));
         // // dragons.push(new FishSpine(app, 500, 0, app.loader.resources.dragon.spineData, "Dragon[500, 0]", 100, 1, Routes.linear, Directions.fromLeftToRight));
         // // dragons.push(new FishSpine(app, screenSize.width, 200, app.loader.resources.dragon.spineData, "Dragon[>, 200]", 100, 1, Routes.linear, Directions.fromLeftToRight));
@@ -245,14 +245,14 @@ export class Game {
 
         this.app.stage.interactive = true;
 
-        this.dragons.forEach(dragon => {
-            if (dragon.state.hasAnimation("flying")) {
-                // run forever, little boy!
-                dragon.state.setAnimation(0, "flying", true);
-                // dont run too fast
-                // dragon.state.timeScale = 0.1;
-            }
-        });
+        // this.dragons.forEach(dragon => {
+        //     if (dragon.state.hasAnimation("flying")) {
+        //         // run forever, little boy!
+        //         dragon.state.setAnimation(0, "flying", true);
+        //         // dont run too fast
+        //         // dragon.state.timeScale = 0.1;
+        //     }
+        // });
 
         this.app.stage.addChild(
             this.gameScene,

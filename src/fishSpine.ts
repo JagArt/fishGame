@@ -1,11 +1,11 @@
 import * as PIXI from "pixi.js"
-import { Routes, slDirection, sbwDirection, sine_wave, linear, Directions } from "./utils/routes";
+import { Route, slDirection, sbwDirection, Directions, Routes } from "./utils/routes";
 import { rotateToPoint } from "./utils/rotateToPointController";
 import { CustomGraphics, CustomGraphicsGeometry, CustomGraphics2 } from "./utils/customgrafics";
 
 export class FishSpine extends PIXI.spine.Spine {
     app: PIXI.Application;
-    route: Routes
+    route: Route
     direction?: Directions;
     speed: number;
     hp: number;
@@ -21,7 +21,9 @@ export class FishSpine extends PIXI.spine.Spine {
 
     snowflake: PIXI.Sprite;
 
-    constructor(app: PIXI.Application, x: number = 0, y: number = 0, skeletonData: PIXI.spine.core.SkeletonData, name: string = "none", hp: number = 100, speed: number = 5, route: Routes, direction?: Directions) {
+    routes: Routes;
+
+    constructor(app: PIXI.Application, x: number = 0, y: number = 0, skeletonData: PIXI.spine.core.SkeletonData, name: string = "none", hp: number = 100, speed: number = 5, route: Route, direction?: Directions) {
         super(skeletonData);
         this.app = app;
         this.width = 150;
@@ -70,16 +72,19 @@ export class FishSpine extends PIXI.spine.Spine {
         // this.buttonMode = true;
         // this.on("pointerdown", () => this.onClick());
         // console.log(this);
+
+        this.routes = new Routes(this.position.x, this.position.x);
+
         app.ticker.add(delta => this.gameLoop(delta));
     }
 
     gameLoop(delta: PIXI.Ticker) {
 
         if (!this.isFreeze) {
-            if (this.route == Routes.sin) {
-                sine_wave(this);
-            } else if (this.route == Routes.linear) {
-                linear(this);
+            if (this.route == Route.sin) {
+                this.routes.sine_wave(this);
+            } else if (this.route == Route.linear) {
+                this.routes.linear(this);
             }
         }
 

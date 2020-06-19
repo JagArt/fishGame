@@ -3,7 +3,7 @@ import { FishSprite } from "../fishSprite";
 import { FishSpine } from "../fishSpine";
 import { rotateToPoint } from "./rotateToPointController";
 
-export enum Routes {
+export enum Route {
     Sl, Sbw, sin, linear
 }
 
@@ -12,6 +12,50 @@ export enum Directions {
     fromLeftToRight,
     downUp,
     topDown
+}
+
+export class Routes {
+    linePosX: number;
+    linePosY: number;
+    range: number;
+
+    constructor(startPosX: number, startPosY: number) {
+        this.linePosX = startPosX;
+        this.linePosY = startPosY;
+        this.range = 25;
+    };
+
+    sine_wave(sprite: FishSpine) {
+        let prevPosition = { x: sprite.x, y: sprite.y };
+        sprite.position.x += sprite.speed;
+        sprite.position.y = sprite.app.screen.height / 2 + 100 * Math.sin(sprite.x / 100 + 100);
+        sprite.rotation = rotateToPoint(sprite.x, sprite.y, prevPosition.x, prevPosition.y);
+    }
+
+    linear(sprite: FishSpine) {
+        let prevPosition = { x: sprite.position.x, y: sprite.position.y };
+        this.linePosX += sprite.speed * fishDirection(sprite).dx;
+        this.linePosX += sprite.speed * fishDirection(sprite).dy;
+
+        sprite.position.x += sprite.speed * fishDirection(sprite).dx;
+        sprite.position.y += sprite.speed * fishDirection(sprite).dy;
+
+        // sprite.position.x += Math.random();
+        // sprite.position.y += Math.random();
+        // if (Math.abs(sprite.position.x - this.linePosX) >= this.range) {
+        //     sprite.position.x -= Math.random() * 10;
+        // } else {
+        //     sprite.position.x += Math.random() * 10;
+        // }
+
+        // if (Math.abs(sprite.position.y - this.linePosY) >= this.range) {
+        //     sprite.position.y -= Math.random() * 10;
+        // } else {
+        //     sprite.position.y += Math.random() * 10;
+        // }
+
+        sprite.rotation = rotateToPoint(sprite.x, sprite.y, prevPosition.x, prevPosition.y);
+    }
 }
 
 function fishDirection(sprite: FishSpine): { dx: number, dy: number } {
@@ -42,19 +86,18 @@ function fishDirection(sprite: FishSpine): { dx: number, dy: number } {
 
 }
 
-export function sine_wave(sprite: FishSpine) {
-    let prevPosition = { x: sprite.x, y: sprite.y };
-    sprite.position.x += sprite.speed;
-    sprite.position.y = sprite.app.screen.height / 2 + 100 * Math.sin(sprite.x / 100 + 100);
-    sprite.rotation = rotateToPoint(sprite.x, sprite.y, prevPosition.x, prevPosition.y);
-}
 
-export function linear(sprite: FishSpine) {
-    let prevPosition = { x: sprite.position.x, y: sprite.position.y };
-    sprite.position.x += sprite.speed * fishDirection(sprite).dx;
-    sprite.position.y += sprite.speed * fishDirection(sprite).dy;
-    sprite.rotation = rotateToPoint(sprite.x, sprite.y, prevPosition.x, prevPosition.y);
-}
+
+
+
+
+
+
+
+
+
+
+
 
 
 export function slDirection() {
