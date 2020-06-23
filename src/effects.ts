@@ -2,10 +2,12 @@ import { Game } from "./app";
 
 export enum Effect {
     freese,
+    nuclear_bomb,
 }
 
 export class Effects extends PIXI.Sprite {
     game: Game;
+
     constructor(game: Game, texture: PIXI.Texture, effect: Effect, name: string, width: number, height: number, tint: number, x: number, y: number) {
         super(texture);
         this.name = name;
@@ -25,12 +27,15 @@ export class Effects extends PIXI.Sprite {
                     case Effect.freese:
                         this.freese();
                         break;
+                    case Effect.nuclear_bomb:
+                        this.nuclear_bomb()
+                        break;
                 }
             });
     }
 
     onClick(text: string) {
-        console.log(text);
+        console.log("Effect name: " + text);
     }
 
     private freese() {
@@ -46,6 +51,17 @@ export class Effects extends PIXI.Sprite {
                     }, 2000);
                 }
             });
+        }
+    }
+
+    private nuclear_bomb() {
+        this.game.bombIsActivated = !this.game.bombIsActivated;
+        if (this.game.bombIsActivated) {
+            console.log("bomb_activate");
+            this.game.bombIsActivated = true;
+        } else {
+            console.log("bomb_disactivate");
+            this.game.bombIsActivated = false;
         }
     }
 }

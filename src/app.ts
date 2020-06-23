@@ -12,7 +12,7 @@ import { Effects, Effect } from "./effects";
 export class Game {
 
     screenSize = { width: 1280, height: 720 };
-    private app: PIXI.Application;
+    app: PIXI.Application;
 
     gameScene: PIXI.Container;
     updatePanel: PIXI.Container;
@@ -22,8 +22,18 @@ export class Game {
     players: Player[] = [];
     dragons: FishSpine[] = [];
 
+    effects: Effects[] = [];
+
     mouseOnEffects: boolean = false;
 
+    bombIsActivated: boolean = false;
+
+    mousePosition = {
+        x: 0,
+        y: 0,
+    };
+
+    explosionTextures: PIXI.Texture[] = [];
 
 
     // const bezier = new CustomGraphics(new CustomGraphicsGeometry());
@@ -122,30 +132,39 @@ export class Game {
 
         // app.renderer.plugins.interaction.cursorStyles.default = defaultIcon;
 
+
+        for (var i = 0; i < 26; i++) {
+            const texture = PIXI.Texture.from(`Explosion_Sequence_A ${i + 1}.png`);
+            this.explosionTextures.push(texture);
+        }
+
         let bg = new PIXI.Sprite(PIXI.Texture.from("bg"));
         bg.width = this.screenSize.width;
         bg.height = this.screenSize.height
         bg.name = "background";
 
-        this.players.push(new Player(this.app, "test player1", 1, 99999, 100));
+        this.players.push(new Player(this, "test player1", 1, 99999, 100));
         // players.push(new Player(app, app.loader.resources.gun_vip1.texture, "test player2", 2, app.loader.resources.bullet.texture, 99999, 100, 5));
         // players.push(new Player(app, app.loader.resources.gun_vip1.texture, "test player3", 3, app.loader.resources.bullet.texture, 99999, 100, 5));
         // players.push(new Player(app, app.loader.resources.gun_vip1.texture, "test player4", 4, app.loader.resources.bullet.texture, 99999, 100, 5));
 
         this.app.stage
             .on("mousedown", () => {
-                if (!this.mouseOnEffects) {
+                if (!this.mouseOnEffects && !this.bombIsActivated) {
                     this.players.forEach(player => {
                         player.shoot();
                     });
+                }
+                if (!this.mouseOnEffects && this.bombIsActivated) {
+                    this.nuclear_boom();
                 }
             });
 
 
 
 
-        this.dragons.push(new FishSpine(this.app, 0, 0, PIXI.Loader.shared.resources.dragon.spineData, "Dragon1[0,0] sin", 100, 1, Route.sin));
-        this.dragons.push(new FishSpine(this.app, 50, 0, PIXI.Loader.shared.resources.dragon.spineData, "Dragon2[0,0]", 100, 1, Route.linear));
+        this.dragons.push(new FishSpine(this, 0, 0, PIXI.Loader.shared.resources.dragon.spineData, "Dragon1[0,0] sin", 100, 1, Route.sin));
+        this.dragons.push(new FishSpine(this, 50, 0, PIXI.Loader.shared.resources.dragon.spineData, "Dragon2[0,0]", 100, 1, Route.linear));
         // // dragons.push(new FishSpine(app, screenSize.width, screenSize.height, app.loader.resources.dragon.spineData, "Dragon[>, >]", 100, 1, Routes.linear, Directions.fromLeftToRight));
         // // dragons.push(new FishSpine(app, 500, 0, app.loader.resources.dragon.spineData, "Dragon[500, 0]", 100, 1, Routes.linear, Directions.fromLeftToRight));
         // // dragons.push(new FishSpine(app, screenSize.width, 200, app.loader.resources.dragon.spineData, "Dragon[>, 200]", 100, 1, Routes.linear, Directions.fromLeftToRight));
@@ -194,7 +213,7 @@ export class Game {
         let effectSquare1 = new Effects(this, PIXI.Texture.from("snowflake"), Effect.freese, "freezing", 50, 50, 0xFFFFFF, 0, 0);
         let effectSquare2 = new Effects(this, PIXI.Texture.WHITE, Effect.freese, "lockdown", 50, 50, 0x0000FF, effectSquare1.position.x + 100, 0);
         let effectSquare3 = new Effects(this, PIXI.Texture.WHITE, Effect.freese, "high effective gun", 50, 50, 0x00FF00, effectSquare2.position.x + 100, 0);
-        let effectSquare4 = new Effects(this, PIXI.Texture.from("nuclear_bomb"), Effect.freese, "nuclear bomb", 50, 50, 0xFFFFFF, effectSquare3.position.x + 100, 0);
+        let effectSquare4 = new Effects(this, PIXI.Texture.from("nuclear_bomb"), Effect.nuclear_bomb, "nuclear bomb", 50, 50, 0xFFFFFF, effectSquare3.position.x + 100, 0);
         let effectSquare5 = new Effects(this, PIXI.Texture.WHITE, Effect.freese, "black hole", 50, 50, 0xf9ff83, effectSquare4.position.x + 100, 0);
 
         this.effectsPanel.addChild(
@@ -231,6 +250,9 @@ export class Game {
 
     private gameLoop(delta: PIXI.Ticker) {
 
+        this.mousePosition.x = this.app.renderer.plugins.interaction.mouse.global.x;
+        this.mousePosition.y = this.app.renderer.plugins.interaction.mouse.global.y;
+
         this.dragons.forEach(dragon => {
             this.players.forEach(player => {
                 player.checkCollapse(dragon, () => {
@@ -238,6 +260,20 @@ export class Game {
                 });
             })
         });
+    }
+
+    nuclear_boom() {
+        let explosion = new PIXI.AnimatedSprite(this.explosionTextures);
+        explosion.loop = false;
+        explosion.scale.set(2, 2);
+        explosion.anchor.set(.5, .5);
+        explosion.position.set(this.mousePosition.x, this.mousePosition.y);
+        explosion.gotoAndPlay(0);
+        this.app.stage.addChild(explosion);
+        explosion.onComplete = () => {
+            this.app.stage.removeChild(explosion);
+        }
+        this.bombIsActivated = false;
     }
 }
 

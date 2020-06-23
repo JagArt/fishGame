@@ -4,9 +4,10 @@ import { Bullet } from "./bullet";
 import sound from 'pixi-sound'
 import { FishSpine } from "./fishSpine";
 import { rectsIntersect } from "./utils/collapsController";
+import { Game } from "./app";
 
 export class Player extends PIXI.Container {
-    app: PIXI.Application;
+    game: Game;
     bulletTex: PIXI.Texture;
 
     credits: number;
@@ -25,9 +26,9 @@ export class Player extends PIXI.Container {
     gemsText: PIXI.Text;
     shootSound: sound.Sound = sound.Sound.from('sounds/Shotgun+2.mp3');
 
-    constructor(app: PIXI.Application, name: string = "none", screenPosition: number, credits: number, gems: number) {
+    constructor(game: Game, name: string = "none", screenPosition: number, credits: number, gems: number) {
         super();
-        this.app = app;
+        this.game = game;
 
         this.credits = credits;
         this.gems = gems;
@@ -66,11 +67,11 @@ export class Player extends PIXI.Container {
 
         this.addChild(this.scoreContainer);
 
-        app.ticker.add(delta => this.gameLoop(delta));
+        this.game.app.ticker.add(delta => this.gameLoop(delta));
     }
 
     gameLoop(delta: PIXI.Ticker) {
-        this.sprite.rotation = rotateToPoint(this.app.renderer.plugins.interaction.mouse.global.x, this.app.renderer.plugins.interaction.mouse.global.y, this.sprite.position.x, this.sprite.position.y)
+        this.sprite.rotation = rotateToPoint(this.game.mousePosition.x, this.game.mousePosition.y, this.sprite.position.x, this.sprite.position.y)
 
         for (var b = this.bullets.length - 1; b >= 0; b--) {
             this.bullets[b].position.x += Math.cos(this.bullets[b].rotation) * this.bullets[b].speed;
@@ -89,8 +90,8 @@ export class Player extends PIXI.Container {
     shoot() {
         // console.log('shoot');
         this.shootSound.play();
-        let bullet = new Bullet(this.app, this.bulletTex, this.sprite.position.x + Math.cos(this.sprite.rotation) * 75, this.sprite.position.y + Math.sin(this.sprite.rotation) * 75, this.sprite.rotation, 10);
-        this.app.stage.addChild(bullet);
+        let bullet = new Bullet(this.game.app, this.bulletTex, this.sprite.position.x + Math.cos(this.sprite.rotation) * 75, this.sprite.position.y + Math.sin(this.sprite.rotation) * 75, this.sprite.rotation, 10);
+        this.game.app.stage.addChild(bullet);
         this.credits -= this.damage;
         this.bullets.push(bullet);
     }
@@ -108,9 +109,9 @@ export class Player extends PIXI.Container {
     // };
 
     isOutside(bullet: PIXI.Sprite): boolean {
-        return bullet.position.x > this.app.screen.width + bullet.width / 2 ||
+        return bullet.position.x > this.game.app.screen.width + bullet.width / 2 ||
             bullet.position.x < - bullet.width / 2 ||
-            bullet.position.y > this.app.screen.height + bullet.height / 2 ||
+            bullet.position.y > this.game.app.screen.height + bullet.height / 2 ||
             bullet.position.y < -bullet.height / 2;
     }
 
@@ -189,11 +190,11 @@ export class Player extends PIXI.Container {
         if (this.screenPosition == 1) {
             score.position.set(15, 15);
         } else if (this.screenPosition == 2) {
-            score.position.set(this.app.screen.width - score.width - 15, 15);
+            score.position.set(this.game.app.screen.width - score.width - 15, 15);
         } else if (this.screenPosition == 3) {
-            score.position.set(15, this.app.screen.height - score.height - 15);
+            score.position.set(15, this.game.app.screen.height - score.height - 15);
         } else {
-            score.position.set(this.app.screen.width - score.width - 15, this.app.screen.height - score.height - 15);
+            score.position.set(this.game.app.screen.width - score.width - 15, this.game.app.screen.height - score.height - 15);
         }
         return score;
     }

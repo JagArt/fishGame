@@ -28,7 +28,7 @@ export class Routes {
     sine_wave(sprite: FishSpine) {
         let prevPosition = { x: sprite.x, y: sprite.y };
         sprite.position.x += sprite.speed;
-        sprite.position.y = sprite.app.screen.height / 2 + 100 * Math.sin(sprite.x / 100 + 100);
+        sprite.position.y = sprite.game.app.screen.height / 2 + 100 * Math.sin(sprite.x / 100 + 100);
         sprite.rotation = rotateToPoint(sprite.x, sprite.y, prevPosition.x, prevPosition.y);
     }
 
@@ -63,7 +63,7 @@ function fishDirection(sprite: FishSpine): { dx: number, dy: number } {
         y = 1;
     if (sprite.sideX == 0 && sprite.sideY == 0) {
         return { dx: x, dy: y };
-    } else if (sprite.sideX >= sprite.app.screen.width && sprite.sideY >= sprite.app.screen.height) {
+    } else if (sprite.sideX >= sprite.game.app.screen.width && sprite.sideY >= sprite.game.app.screen.height) {
         return { dx: -x, dy: -y };
     }
 
@@ -75,10 +75,10 @@ function fishDirection(sprite: FishSpine): { dx: number, dy: number } {
         return { dx: x, dy: y };
     }
 
-    if (sprite.sideX >= sprite.app.screen.width) {
+    if (sprite.sideX >= sprite.game.app.screen.width) {
         y = sprite.direction == Directions.topDown ? 1 : -1;
         return { dx: -x, dy: y };
-    } else if (sprite.sideY >= sprite.app.screen.height) {
+    } else if (sprite.sideY >= sprite.game.app.screen.height) {
         x = sprite.direction == Directions.downUp ? -1 : -1;
         return { dx: x, dy: -y };
     }

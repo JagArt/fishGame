@@ -2,9 +2,10 @@ import * as PIXI from "pixi.js"
 import { Route, slDirection, sbwDirection, Directions, Routes } from "./utils/routes";
 import { rotateToPoint } from "./utils/rotateToPointController";
 import { CustomGraphics, CustomGraphicsGeometry, CustomGraphics2 } from "./utils/customgrafics";
+import { Game } from "./app";
 
 export class FishSpine extends PIXI.spine.Spine {
-    app: PIXI.Application;
+    game: Game;
     route: Route
     direction?: Directions;
     speed: number;
@@ -17,15 +18,13 @@ export class FishSpine extends PIXI.spine.Spine {
     sideX: number;
     sideY: number;
 
-    explosionTextures: PIXI.Texture[] = [];
-
     snowflake: PIXI.Sprite;
 
     routes: Routes;
 
-    constructor(app: PIXI.Application, x: number = 0, y: number = 0, skeletonData: PIXI.spine.core.SkeletonData, name: string = "none", hp: number = 100, speed: number = 5, route: Route, direction?: Directions) {
+    constructor(game: Game, x: number = 0, y: number = 0, skeletonData: PIXI.spine.core.SkeletonData, name: string = "none", hp: number = 100, speed: number = 5, route: Route, direction?: Directions) {
         super(skeletonData);
-        this.app = app;
+        this.game = game;
         this.width = 150;
         this.height = 150;
         this.route = route;
@@ -42,20 +41,14 @@ export class FishSpine extends PIXI.spine.Spine {
         this.position.y = y;
         if (x == 0) {
             this.position.x -= this.width;
-        } else if (x >= app.screen.width) {
+        } else if (x >= this.game.app.screen.width) {
             this.position.x += this.width;
         }
 
         if (y == 0) {
             this.position.y -= this.height;
-        } else if (y >= app.screen.height) {
+        } else if (y >= this.game.app.screen.height) {
             this.position.y += this.height;
-        }
-
-
-        for (var i = 0; i < 26; i++) {
-            const texture = PIXI.Texture.from(`Explosion_Sequence_A ${i + 1}.png`);
-            this.explosionTextures.push(texture);
         }
 
         this.snowflake = new PIXI.Sprite(PIXI.Texture.from("snowflake"));
@@ -75,7 +68,7 @@ export class FishSpine extends PIXI.spine.Spine {
 
         this.routes = new Routes(this.position.x, this.position.x);
 
-        app.ticker.add(delta => this.gameLoop(delta));
+        this.game.app.ticker.add(delta => this.gameLoop(delta));
     }
 
     gameLoop(delta: PIXI.Ticker) {
@@ -102,15 +95,15 @@ export class FishSpine extends PIXI.spine.Spine {
 
     dead() {
         console.log(this.name + " is dead");
-        let explosion = new PIXI.AnimatedSprite(this.explosionTextures);
+        let explosion = new PIXI.AnimatedSprite(this.game.explosionTextures);
         explosion.loop = false;
         explosion.scale.set(2, 2);
         explosion.anchor.set(.5, .5);
         explosion.position.copyFrom(this.position);
         explosion.gotoAndPlay(0);
-        this.app.stage.addChild(explosion);
+        this.game.app.stage.addChild(explosion);
         explosion.onComplete = () => {
-            this.app.stage.removeChild(explosion);
+            this.game.app.stage.removeChild(explosion);
         }
     }
 
@@ -137,14 +130,14 @@ export class FishSpine extends PIXI.spine.Spine {
         this.autoUpdate = false;
 
         this.snowflake.position.copyFrom(this.position);
-        this.app.stage.addChild(this.snowflake);
+        this.game.app.stage.addChild(this.snowflake);
     }
 
     unfreeze() {
         this.isFreeze = false;
         this.autoUpdate = true;
 
-        this.app.stage.removeChild(this.snowflake);
+        this.game.app.stage.removeChild(this.snowflake);
     }
 }
 
