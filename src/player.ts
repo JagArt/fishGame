@@ -123,18 +123,21 @@ export class Player extends PIXI.Container {
         return "Name is: " + this.name;
     }
 
-    checkCollapse(fish: FishSpine, callback: Function) {
+    checkCollapse(fish: FishSpine) {
         this.bullets.forEach(bullet => {
             if (rectsIntersect(fish, bullet)) {
                 console.log('hit');
                 bullet.hit();
                 this.bullets.splice(this.bullets.indexOf(bullet), 1);
-                fish.hit(this.damage);
-                if (fish.hp <= 0) {
+                fish.hit(this.damage, () => {
                     this.credits += 1000;
-                    fish.dead();
-                    callback();
-                }
+                    this.game.dragons.splice(this.game.dragons.indexOf(fish), 1);
+                });
+                // if (fish.hp <= 0) {
+                //     this.credits += 1000;
+                //     fish.dead();
+                //     this.game.dragons.splice(this.game.dragons.indexOf(fish), 1);
+                // }
             };
         });
     }

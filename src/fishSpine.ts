@@ -115,10 +115,14 @@ export class FishSpine extends PIXI.spine.Spine {
         return super.getBounds();
     }
 
-    hit(damage: number) {
+    hit(damage: number, callback: Function) {
         this.hasHit = true;
         this.hp -= damage;
         console.log(this.name + ": " + this.hp + ' hp left');
+        if (this.hp <= 0) {
+            this.dead();
+            callback();
+        }
     }
 
     // onClick() {

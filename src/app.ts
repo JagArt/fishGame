@@ -27,6 +27,7 @@ export class Game {
     mouseOnEffects: boolean = false;
 
     bombIsActivated: boolean = false;
+    bombDamage: number = 50;
 
     mousePosition = {
         x: 0,
@@ -163,8 +164,8 @@ export class Game {
 
 
 
-        this.dragons.push(new FishSpine(this, 0, 0, PIXI.Loader.shared.resources.dragon.spineData, "Dragon1[0,0] sin", 100, 1, Route.sin));
-        this.dragons.push(new FishSpine(this, 50, 0, PIXI.Loader.shared.resources.dragon.spineData, "Dragon2[0,0]", 100, 1, Route.linear));
+        this.dragons.push(new FishSpine(this, 0, 0, PIXI.Loader.shared.resources.dragon.spineData, "Dragon2 sin", 100, 1, Route.sin));
+        this.dragons.push(new FishSpine(this, 50, 0, PIXI.Loader.shared.resources.dragon.spineData, "Dragon1", 100, 1, Route.linear));
         // // dragons.push(new FishSpine(app, screenSize.width, screenSize.height, app.loader.resources.dragon.spineData, "Dragon[>, >]", 100, 1, Routes.linear, Directions.fromLeftToRight));
         // // dragons.push(new FishSpine(app, 500, 0, app.loader.resources.dragon.spineData, "Dragon[500, 0]", 100, 1, Routes.linear, Directions.fromLeftToRight));
         // // dragons.push(new FishSpine(app, screenSize.width, 200, app.loader.resources.dragon.spineData, "Dragon[>, 200]", 100, 1, Routes.linear, Directions.fromLeftToRight));
@@ -255,9 +256,7 @@ export class Game {
 
         this.dragons.forEach(dragon => {
             this.players.forEach(player => {
-                player.checkCollapse(dragon, () => {
-                    this.dragons.splice(this.dragons.indexOf(dragon), 1);
-                });
+                player.checkCollapse(dragon);
             })
         });
     }
@@ -274,6 +273,20 @@ export class Game {
             this.app.stage.removeChild(explosion);
         }
         this.bombIsActivated = false;
+
+        this.dragons.forEach(dragon => {
+            let distance = Math.abs(this.mousePosition.x - dragon.position.x);
+            let damage = Math.abs(distance / this.screenSize.width - 1) * this.bombDamage;
+            dragon.hit(damage, () => {
+                this.players[0].credits += 12345;
+            });
+        });
+
+        this.dragons.forEach(dragon => {
+            if (dragon.hp <= 0) {
+                this.dragons.splice(this.dragons.indexOf(dragon), 1);
+            }
+        })
     }
 }
 
