@@ -7,7 +7,7 @@ import { FishSprite } from "./fishSprite";
 import { Player } from "./player";
 import { Route, Directions } from "./utils/routes";
 import { FishSpine } from "./fishSpine";
-import { Effects } from "./effects";
+import { Effects, Effect } from "./effects";
 
 export class Game {
 
@@ -23,6 +23,8 @@ export class Game {
     dragons: FishSpine[] = [];
 
     mouseOnEffects: boolean = false;
+
+
 
     // const bezier = new CustomGraphics(new CustomGraphicsGeometry());
 
@@ -163,24 +165,9 @@ export class Game {
 
 
         // update panel 
-        let updateSquare1 = new Effects(PIXI.Texture.WHITE, "gun upgrade", 50, 50, 0x000000, 0, 0);
-        updateSquare1
-            .on("pointerdown", () => { })
-            .on("pointerover", () => { this.mouseOnEffects = true })
-            .on("pointerout", () => { this.mouseOnEffects = false });
-
-        let updateSquare2 = new Effects(PIXI.Texture.WHITE, "bullet upgrade", 50, 50, 0x000000, 0, updateSquare1.position.y + 100);
-        updateSquare2
-            .on("pointerdown", () => { })
-            .on("pointerover", () => { this.mouseOnEffects = true })
-            .on("pointerout", () => { this.mouseOnEffects = false });
-
-        let updateSquare3 = new Effects(PIXI.Texture.WHITE, "BOSS calling", 50, 50, 0x000000, 0, updateSquare2.position.y + 100);
-        updateSquare3
-            .on("pointerdown", () => { })
-            .on("pointerover", () => { this.mouseOnEffects = true })
-            .on("pointerout", () => { this.mouseOnEffects = false });
-
+        let updateSquare1 = new Effects(this, PIXI.Texture.WHITE, Effect.freese, "gun upgrade", 50, 50, 0x000000, 0, 0);
+        let updateSquare2 = new Effects(this, PIXI.Texture.WHITE, Effect.freese, "bullet upgrade", 50, 50, 0x000000, 0, updateSquare1.position.y + 100);
+        let updateSquare3 = new Effects(this, PIXI.Texture.WHITE, Effect.freese, "BOSS calling", 50, 50, 0x000000, 0, updateSquare2.position.y + 100);
 
         let update1Text = new PIXI.Text('//gun upgrade');
         update1Text.position.set(updateSquare1.position.x + updateSquare1.width + 25, updateSquare1.position.y);
@@ -204,35 +191,11 @@ export class Game {
 
 
         //effects panel
-        let effectSquare1 = new Effects(PIXI.Texture.from("snowflake"), "freezing", 50, 50, 0xFFFFFF, 0, 0);
-        effectSquare1
-            .on("pointerdown", () => this.freese())
-            .on("pointerover", () => { this.mouseOnEffects = true })
-            .on("pointerout", () => { this.mouseOnEffects = false });
-
-        let effectSquare2 = new Effects(PIXI.Texture.WHITE, "lockdown", 50, 50, 0x0000FF, effectSquare1.position.x + 100, 0);
-        effectSquare2
-            .on("pointerdown", () => { })
-            .on("pointerover", () => { this.mouseOnEffects = true })
-            .on("pointerout", () => { this.mouseOnEffects = false });
-
-        let effectSquare3 = new Effects(PIXI.Texture.WHITE, "high effective gun", 50, 50, 0x00FF00, effectSquare2.position.x + 100, 0);
-        effectSquare3
-            .on("pointerdown", () => { })
-            .on("pointerover", () => { this.mouseOnEffects = true })
-            .on("pointerout", () => { this.mouseOnEffects = false });
-
-        let effectSquare4 = new Effects(PIXI.Texture.from("nuclear_bomb"), "nuclear bomb", 50, 50, 0xFFFFFF, effectSquare3.position.x + 100, 0);
-        effectSquare4
-            .on("pointerdown", () => { })
-            .on("pointerover", () => { this.mouseOnEffects = true })
-            .on("pointerout", () => { this.mouseOnEffects = false });
-
-        let effectSquare5 = new Effects(PIXI.Texture.WHITE, "black hole", 50, 50, 0xf9ff83, effectSquare4.position.x + 100, 0);
-        effectSquare5
-            .on("pointerdown", () => { })
-            .on("pointerover", () => { this.mouseOnEffects = true })
-            .on("pointerout", () => { this.mouseOnEffects = false });
+        let effectSquare1 = new Effects(this, PIXI.Texture.from("snowflake"), Effect.freese, "freezing", 50, 50, 0xFFFFFF, 0, 0);
+        let effectSquare2 = new Effects(this, PIXI.Texture.WHITE, Effect.freese, "lockdown", 50, 50, 0x0000FF, effectSquare1.position.x + 100, 0);
+        let effectSquare3 = new Effects(this, PIXI.Texture.WHITE, Effect.freese, "high effective gun", 50, 50, 0x00FF00, effectSquare2.position.x + 100, 0);
+        let effectSquare4 = new Effects(this, PIXI.Texture.from("nuclear_bomb"), Effect.freese, "nuclear bomb", 50, 50, 0xFFFFFF, effectSquare3.position.x + 100, 0);
+        let effectSquare5 = new Effects(this, PIXI.Texture.WHITE, Effect.freese, "black hole", 50, 50, 0xf9ff83, effectSquare4.position.x + 100, 0);
 
         this.effectsPanel.addChild(
             effectSquare1,
@@ -245,14 +208,14 @@ export class Game {
 
         this.app.stage.interactive = true;
 
-        // this.dragons.forEach(dragon => {
-        //     if (dragon.state.hasAnimation("flying")) {
-        //         // run forever, little boy!
-        //         dragon.state.setAnimation(0, "flying", true);
-        //         // dont run too fast
-        //         // dragon.state.timeScale = 0.1;
-        //     }
-        // });
+        this.dragons.forEach(dragon => {
+            if (dragon.state.hasAnimation("flying")) {
+                // run forever, little boy!
+                dragon.state.setAnimation(0, "flying", true);
+                // dont run too fast
+                // dragon.state.timeScale = 0.1;
+            }
+        });
 
         this.app.stage.addChild(
             this.gameScene,
@@ -275,23 +238,6 @@ export class Game {
                 });
             })
         });
-    }
-
-    private freese() {
-
-        if (this.players[0].credits >= 10000) {
-            this.dragons.forEach(dragon => {
-                if (!dragon.isFreeze) {
-                    this.players[0].credits -= 10000;
-                    dragon.freeze();
-                    setTimeout(() => {
-                        this.dragons.forEach(dragon => {
-                            dragon.unfreeze();
-                        });
-                    }, 2000);
-                }
-            });
-        }
     }
 }
 
