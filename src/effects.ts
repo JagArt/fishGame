@@ -1,4 +1,5 @@
 import { Game } from "./app";
+import { Sprite, Texture } from "pixi.js";
 
 export enum Effect {
     freese,
@@ -32,6 +33,8 @@ export class Effects extends PIXI.Sprite {
                         break;
                 }
             });
+
+        this.game.app.ticker.add(() => this.gameLoop());
     }
 
     onClick(text: string) {
@@ -59,9 +62,16 @@ export class Effects extends PIXI.Sprite {
         if (this.game.bombIsActivated) {
             console.log("bomb_activate");
             this.game.bombIsActivated = true;
+            this.game.bomb!.visible = true;
         } else {
             console.log("bomb_disactivate");
             this.game.bombIsActivated = false;
+            this.game.bomb!.visible = false;
         }
+    }
+
+    private gameLoop() {
+        this.game.bomb?.position.set(this.game.mousePosition.x, this.game.mousePosition.y);
+        // console.log(this.game.bomb?.position.x + ", " + this.game.bomb?.position.y);
     }
 }

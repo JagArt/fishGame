@@ -1,12 +1,7 @@
 import { FishSpine } from "../fishSpine";
 import { FishSprite } from "../fishSprite";
 
-// export class CollapsController { }
-
 export function rectsIntersect(a: FishSpine | FishSprite, b: PIXI.Sprite) {
-    // console.log(a);
-    // console.log(b);
-
     if (a === undefined || b === undefined) return false;
 
     let aBox = a.getBounds();

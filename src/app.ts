@@ -29,10 +29,14 @@ export class Game {
     bombIsActivated: boolean = false;
     bombDamage: number = 50;
 
+    bomb: PIXI.Sprite | undefined;
+
     mousePosition = {
         x: 0,
         y: 0,
     };
+
+    objectIsTarget: boolean = false;
 
     explosionTextures: PIXI.Texture[] = [];
 
@@ -75,7 +79,10 @@ export class Game {
             .add("bullet", "images/bullets/0_bullet.png")
             .add("explosion", "images/effects/spritesheets/mc.json")
             .add("snowflake", "images/effects/snowflake.png")
+            .add("black_hole", "images/effects/black_hole.png")
+            .add("effective_gun", "images/effects/effective_gun.png")
             .add("nuclear_bomb", "images/effects/nuclear_bomb.png")
+            .add("bomb", "images/effects/bomb.png")
             .add("dragon", "images/dragon/export/dragon-ess.json")
             .on("progress", this.onLoadProgress.bind(this))
             .once("complete", this.onLoadComplete.bind(this))
@@ -159,10 +166,14 @@ export class Game {
                 if (!this.mouseOnEffects && this.bombIsActivated) {
                     this.nuclear_boom();
                 }
+                if (!this.mouseOnEffects && this.objectIsTarget) { }
             });
 
-
-
+        this.bomb = new PIXI.Sprite(PIXI.Texture.from("bomb"));
+        this.bomb.width = 100;
+        this.bomb.height = 100;
+        this.bomb.anchor.set(0.5, 0.5);
+        this.bomb.visible = false;
 
         this.dragons.push(new FishSpine(this, 0, 0, PIXI.Loader.shared.resources.dragon.spineData, "Dragon2 sin", 100, 1, Route.sin));
         this.dragons.push(new FishSpine(this, 50, 0, PIXI.Loader.shared.resources.dragon.spineData, "Dragon1", 100, 1, Route.linear));
@@ -211,19 +222,20 @@ export class Game {
 
 
         //effects panel
-        let effectSquare1 = new Effects(this, PIXI.Texture.from("snowflake"), Effect.freese, "freezing", 50, 50, 0xFFFFFF, 0, 0);
-        let effectSquare2 = new Effects(this, PIXI.Texture.WHITE, Effect.freese, "lockdown", 50, 50, 0x0000FF, effectSquare1.position.x + 100, 0);
-        let effectSquare3 = new Effects(this, PIXI.Texture.WHITE, Effect.freese, "high effective gun", 50, 50, 0x00FF00, effectSquare2.position.x + 100, 0);
-        let effectSquare4 = new Effects(this, PIXI.Texture.from("nuclear_bomb"), Effect.nuclear_bomb, "nuclear bomb", 50, 50, 0xFFFFFF, effectSquare3.position.x + 100, 0);
-        let effectSquare5 = new Effects(this, PIXI.Texture.WHITE, Effect.freese, "black hole", 50, 50, 0xf9ff83, effectSquare4.position.x + 100, 0);
+        this.effects.push(new Effects(this, PIXI.Texture.from("snowflake"), Effect.freese, "freezing", 50, 50, 0xFFFFFF, 0, 0));
+        this.effects.push(new Effects(this, PIXI.Texture.from("effective_gun"), Effect.freese, "lockdown", 50, 50, 0xFFFFFF, 0, 0));
+        this.effects.push(new Effects(this, PIXI.Texture.from("nuclear_bomb"), Effect.nuclear_bomb, "nuclear bomb", 50, 50, 0xFFFFFF, 0, 0));
+        this.effects.push(new Effects(this, PIXI.Texture.from("cursor"), Effect.freese, "high effective gun", 50, 50, 0xFFFFFF, 0, 0));
+        this.effects.push(new Effects(this, PIXI.Texture.from("black_hole"), Effect.freese, "black hole", 50, 50, 0xFFFFFF, 0, 0));
 
-        this.effectsPanel.addChild(
-            effectSquare1,
-            effectSquare2,
-            effectSquare3,
-            effectSquare4,
-            effectSquare5,
-        );
+        for (var e = 1; e < this.effects.length; e++) {
+            this.effects[e].position.set(this.effects[e - 1].position.x + 100, 0);
+        }
+
+        this.effects.forEach(effect => {
+            this.effectsPanel.addChild(effect);
+        });
+
         this.effectsPanel.position.set(this.screenSize.width / 2 - this.effectsPanel.width / 2, this.screenSize.height - this.effectsPanel.height - 25);
 
         this.app.stage.interactive = true;
@@ -236,6 +248,8 @@ export class Game {
                 // dragon.state.timeScale = 0.1;
             }
         });
+
+        this.gameScene.addChild(this.bomb);
 
         this.app.stage.addChild(
             this.gameScene,
@@ -254,6 +268,8 @@ export class Game {
         this.mousePosition.x = this.app.renderer.plugins.interaction.mouse.global.x;
         this.mousePosition.y = this.app.renderer.plugins.interaction.mouse.global.y;
 
+        // this.bomb?.position.set(this.mousePosition.x, this.mousePosition.y);
+
         this.dragons.forEach(dragon => {
             this.players.forEach(player => {
                 player.checkCollapse(dragon);
@@ -262,6 +278,8 @@ export class Game {
     }
 
     nuclear_boom() {
+        this.bomb!.visible = false;
+
         let explosion = new PIXI.AnimatedSprite(this.explosionTextures);
         explosion.loop = false;
         explosion.scale.set(2, 2);
