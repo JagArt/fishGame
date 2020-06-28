@@ -5,7 +5,9 @@ export enum Effect {
     freese,
     nuclear_bomb,
     target,
-    effectiv_gun
+    effectiv_gun,
+    gun_upgrade,
+    bullet_upgrade
 }
 
 export class Effects extends PIXI.Sprite {
@@ -39,6 +41,13 @@ export class Effects extends PIXI.Sprite {
                     case Effect.effectiv_gun:
                         this.effectivGun()
                         break;
+                    case Effect.gun_upgrade:
+                        this.gunUpgrade()
+                        break;
+                    case Effect.bullet_upgrade:
+                        this.bulletUpgrade()
+                        break;
+
                 }
             });
 
@@ -47,6 +56,14 @@ export class Effects extends PIXI.Sprite {
 
     onClick(text: string) {
         console.log("Effect name: " + text);
+    }
+
+    bulletUpgrade() {
+        this.game.players[0].bulletLevelUp();
+    }
+
+    gunUpgrade() {
+        this.game.players[0].gunLevelUp();
     }
 
     private freese() {

@@ -13,6 +13,9 @@ export class Player extends PIXI.Container {
     credits: number;
     gems: number;
 
+    gunLevel: number;
+    bulletLevel: number;
+
     bullets: Bullet[] = [];
 
     damage: number;
@@ -39,13 +42,16 @@ export class Player extends PIXI.Container {
         this.creditsText = new PIXI.Text(credits.toString());
         this.gemsText = new PIXI.Text(gems.toString());
 
-        this.bulletTex = PIXI.Texture.from("bullet");
+        this.gunLevel = 1;
+        this.bulletLevel = 1;
+
+        this.bulletTex = PIXI.Texture.from("bullet0");
         this.damage = 20;
         this.shotSpeed = 500;
 
         this.shootSound.volume = 0.01;
 
-        this.sprite = new PIXI.Sprite(PIXI.Texture.from("gun_vip1"));
+        this.sprite = new PIXI.Sprite(PIXI.Texture.from("gun_vip0"));
         this.sprite.anchor.set(0.5);
         this.sprite.name = name;
         this.sprite.width = 150;
@@ -213,4 +219,16 @@ export class Player extends PIXI.Container {
         return score;
     }
 
+    gunLevelUp() {
+        this.gunLevel += 1;
+        if (this.gunLevel == 10) this.gunLevel = 0;
+        this.sprite.texture = PIXI.Texture.from("gun_vip" + this.gunLevel);
+        this.bulletTex = PIXI.Texture.from("bullet" + this.gunLevel);
+        console.log('gunLevel: ' + this.gunLevel);
+    }
+
+    bulletLevelUp() {
+        this.bulletLevel += 1;
+        console.log('bulletLevel: ' + this.bulletLevel);
+    }
 }

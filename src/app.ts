@@ -81,7 +81,16 @@ export class Game {
             .add("gun_vip7", "images/guns_png/gun_vip7.png")
             .add("gun_vip8", "images/guns_png/gun_vip8.png")
             .add("gun_vip9", "images/guns_png/gun_vip9.png")
-            .add("bullet", "images/bullets/0_bullet.png")
+            .add("bullet0", "images/bullets/0_bullet.png")
+            .add("bullet1", "images/bullets/1_bullet.png")
+            .add("bullet2", "images/bullets/2_bullet.png")
+            .add("bullet3", "images/bullets/3_bullet.png")
+            .add("bullet4", "images/bullets/4_bullet.png")
+            .add("bullet5", "images/bullets/5_bullet.png")
+            .add("bullet6", "images/bullets/6_bullet.png")
+            .add("bullet7", "images/bullets/7_bullet.png")
+            .add("bullet8", "images/bullets/8_bullet.png")
+            .add("bullet9", "images/bullets/9_bullet.png")
             .add("explosion", "images/effects/spritesheets/mc.json")
             .add("snowflake", "images/effects/snowflake.png")
             .add("black_hole", "images/effects/black_hole.png")
@@ -101,7 +110,7 @@ export class Game {
     }
 
     private onLoadProgress() {
-        console.log(PIXI.Loader.shared.progress + " % loaded");
+        // console.log(PIXI.Loader.shared.progress + " % loaded");
 
         var progress = 500 * PIXI.Loader.shared.progress / 100;
 
@@ -208,8 +217,8 @@ export class Game {
 
 
         // update panel 
-        let updateSquare1 = new Effects(this, PIXI.Texture.WHITE, Effect.freese, "gun upgrade", 50, 50, 0x000000, 0, 0);
-        let updateSquare2 = new Effects(this, PIXI.Texture.WHITE, Effect.freese, "bullet upgrade", 50, 50, 0x000000, 0, updateSquare1.position.y + 100);
+        let updateSquare1 = new Effects(this, PIXI.Texture.WHITE, Effect.gun_upgrade, "gun upgrade", 50, 50, 0x000000, 0, 0);
+        let updateSquare2 = new Effects(this, PIXI.Texture.WHITE, Effect.bullet_upgrade, "bullet upgrade", 50, 50, 0x000000, 0, updateSquare1.position.y + 100);
         let updateSquare3 = new Effects(this, PIXI.Texture.WHITE, Effect.freese, "BOSS calling", 50, 50, 0x000000, 0, updateSquare2.position.y + 100);
 
         let update1Text = new PIXI.Text('//gun upgrade');
