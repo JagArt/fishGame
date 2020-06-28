@@ -37,6 +37,8 @@ export class Game {
         y: 0,
     };
 
+    mouseIsDown: boolean = false;
+
     targetEffectIsActivated: boolean = false;
     targetImage: PIXI.Sprite | undefined;
     targetedObject: FishSpine | FishSprite | undefined;
@@ -161,17 +163,16 @@ export class Game {
 
         this.app.stage
             .on("mousedown", () => {
-                if (!this.mouseOnEffects && !this.bombIsActivated) {
-                    this.players.forEach(player => {
-                        player.shoot();
-                    });
-                }
+                this.mouseIsDown = true;
                 if (!this.mouseOnEffects && this.bombIsActivated) {
                     this.nuclear_boom();
                 }
                 if (!this.mouseOnEffects && this.targetEffectIsActivated) {
                     this.fish_target();
                 }
+            })
+            .on("mouseup", () => {
+                this.mouseIsDown = false;
             });
 
         this.bomb = new PIXI.Sprite(PIXI.Texture.from("bomb"));

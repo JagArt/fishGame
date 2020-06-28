@@ -17,6 +17,8 @@ export class Player extends PIXI.Container {
 
     damage: number;
 
+    isShoot: boolean = false;
+
     sprite: PIXI.Sprite;
 
     scoreContainer: PIXI.Container;
@@ -35,8 +37,6 @@ export class Player extends PIXI.Container {
 
         this.creditsText = new PIXI.Text(credits.toString());
         this.gemsText = new PIXI.Text(gems.toString());
-
-
 
         this.bulletTex = PIXI.Texture.from("bullet");
         this.damage = 20;
@@ -86,6 +86,10 @@ export class Player extends PIXI.Container {
                 this.bullets.splice(this.bullets.indexOf(this.bullets[b]), 1);
             }
         }
+
+        if (!this.game.mouseOnEffects && !this.game.bombIsActivated && this.game.mouseIsDown) {
+            this.shoot();
+        }
         // this.scoreContainer = this.getScoreContainer();
         this.creditsText.text = this.credits.toString();
         this.gemsText.text = this.gems.toString();
@@ -93,12 +97,17 @@ export class Player extends PIXI.Container {
     }
 
     shoot() {
-        // console.log('shoot');
-        this.shootSound.play();
-        let bullet = new Bullet(this.game.app, this.bulletTex, this.sprite.position.x + Math.cos(this.sprite.rotation) * 75, this.sprite.position.y + Math.sin(this.sprite.rotation) * 75, this.sprite.rotation, 10);
-        this.game.app.stage.addChild(bullet);
-        this.credits -= this.damage;
-        this.bullets.push(bullet);
+        if (!this.isShoot) {
+            this.shootSound.play();
+            let bullet = new Bullet(this.game.app, this.bulletTex, this.sprite.position.x + Math.cos(this.sprite.rotation) * 75, this.sprite.position.y + Math.sin(this.sprite.rotation) * 75, this.sprite.rotation, 10);
+            this.game.app.stage.addChild(bullet);
+            this.credits -= this.damage;
+            this.bullets.push(bullet);
+            this.isShoot = true;
+            setTimeout(() => {
+                this.isShoot = false;
+            }, 500);
+        }
     }
 
     // getPosition(pos: number): PIXI.Point {
