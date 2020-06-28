@@ -78,13 +78,15 @@ export class Effects extends PIXI.Sprite {
         this.game.targetEffectIsActivated = !this.game.targetEffectIsActivated;
         if (this.game.targetEffectIsActivated) {
             this.game.targetEffectIsActivated = true;
+            this.game.targetImage!.visible = true;
         } else {
             this.game.targetEffectIsActivated = false;
+            this.game.targetImage!.visible = false;
         }
     }
 
     private gameLoop() {
         this.game.bomb?.position.set(this.game.mousePosition.x, this.game.mousePosition.y);
-        // console.log(this.game.bomb?.position.x + ", " + this.game.bomb?.position.y);
+        this.game.targetImage?.position.set(this.game.mousePosition.x, this.game.mousePosition.y);
     }
 }

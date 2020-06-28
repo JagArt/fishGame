@@ -38,7 +38,7 @@ export class Game {
     };
 
     targetEffectIsActivated: boolean = false;
-    // objectIsTarget: boolean = false;
+    targetImage: PIXI.Sprite | undefined;
     targetedObject: FishSpine | FishSprite | undefined;
 
     explosionTextures: PIXI.Texture[] = [];
@@ -180,6 +180,12 @@ export class Game {
         this.bomb.anchor.set(0.5, 0.5);
         this.bomb.visible = false;
 
+        this.targetImage = new PIXI.Sprite(PIXI.Texture.from("cursor"));
+        this.targetImage.width = 100;
+        this.targetImage.height = 100;
+        this.targetImage.anchor.set(0.5, 0.5);
+        this.targetImage.visible = false;
+
         this.dragons.push(new FishSpine(this, 0, 0, PIXI.Loader.shared.resources.dragon.spineData, "Dragon2 sin", 100, 1, Route.sin));
         this.dragons.push(new FishSpine(this, 50, 0, PIXI.Loader.shared.resources.dragon.spineData, "Dragon1", 100, 1, Route.linear));
         // // dragons.push(new FishSpine(app, screenSize.width, screenSize.height, app.loader.resources.dragon.spineData, "Dragon[>, >]", 100, 1, Routes.linear, Directions.fromLeftToRight));
@@ -255,6 +261,7 @@ export class Game {
         });
 
         this.gameScene.addChild(this.bomb);
+        this.gameScene.addChild(this.targetImage);
 
         this.app.stage.addChild(
             this.gameScene,
@@ -272,8 +279,6 @@ export class Game {
 
         this.mousePosition.x = this.app.renderer.plugins.interaction.mouse.global.x;
         this.mousePosition.y = this.app.renderer.plugins.interaction.mouse.global.y;
-
-        // this.bomb?.position.set(this.mousePosition.x, this.mousePosition.y);
 
         this.dragons.forEach(dragon => {
             this.players.forEach(player => {
@@ -323,6 +328,7 @@ export class Game {
                 }
             });
             this.targetEffectIsActivated = false;
+            this.targetImage!.visible = false;
         }
     }
 }
