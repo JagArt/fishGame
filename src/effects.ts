@@ -5,6 +5,7 @@ export enum Effect {
     freese,
     nuclear_bomb,
     target,
+    effectiv_gun
 }
 
 export class Effects extends PIXI.Sprite {
@@ -34,6 +35,9 @@ export class Effects extends PIXI.Sprite {
                         break;
                     case Effect.target:
                         this.fish_target()
+                        break;
+                    case Effect.effectiv_gun:
+                        this.effectivGun()
                         break;
                 }
             });
@@ -83,6 +87,13 @@ export class Effects extends PIXI.Sprite {
             this.game.targetEffectIsActivated = false;
             this.game.targetImage!.visible = false;
         }
+    }
+
+    private effectivGun() {
+        this.game.players[0].shotSpeed = 100;
+        setTimeout(() => {
+            this.game.players[0].shotSpeed = 500;
+        }, 3000);
     }
 
     private gameLoop() {

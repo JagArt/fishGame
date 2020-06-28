@@ -235,7 +235,7 @@ export class Game {
 
         //effects panel
         this.effects.push(new Effects(this, PIXI.Texture.from("snowflake"), Effect.freese, "freezing", 50, 50, 0xFFFFFF, 0, 0));
-        this.effects.push(new Effects(this, PIXI.Texture.from("effective_gun"), Effect.freese, "high effective gun", 50, 50, 0xFFFFFF, 0, 0));
+        this.effects.push(new Effects(this, PIXI.Texture.from("effective_gun"), Effect.effectiv_gun, "high effective gun", 50, 50, 0xFFFFFF, 0, 0));
         this.effects.push(new Effects(this, PIXI.Texture.from("nuclear_bomb"), Effect.nuclear_bomb, "nuclear bomb", 50, 50, 0xFFFFFF, 0, 0));
         this.effects.push(new Effects(this, PIXI.Texture.from("cursor"), Effect.target, "lockdown", 50, 50, 0xFFFFFF, 0, 0));
         this.effects.push(new Effects(this, PIXI.Texture.from("black_hole"), Effect.freese, "black hole", 50, 50, 0xFFFFFF, 0, 0));

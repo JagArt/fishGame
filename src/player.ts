@@ -18,6 +18,7 @@ export class Player extends PIXI.Container {
     damage: number;
 
     isShoot: boolean = false;
+    shotSpeed: number;
 
     sprite: PIXI.Sprite;
 
@@ -40,6 +41,7 @@ export class Player extends PIXI.Container {
 
         this.bulletTex = PIXI.Texture.from("bullet");
         this.damage = 20;
+        this.shotSpeed = 500;
 
         this.shootSound.volume = 0.01;
 
@@ -106,7 +108,7 @@ export class Player extends PIXI.Container {
             this.isShoot = true;
             setTimeout(() => {
                 this.isShoot = false;
-            }, 500);
+            }, this.shotSpeed);
         }
     }
 
