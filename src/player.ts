@@ -3,7 +3,7 @@ import { rotateToPoint } from "./utils/rotateToPointController";
 import { Bullet } from "./bullet";
 import sound from 'pixi-sound'
 import { FishSpine } from "./fishSpine";
-import { rectsIntersect } from "./utils/collapsController";
+import { rectsIntersect, mouseCollapse } from "./utils/collapsController";
 import { Game } from "./app";
 
 export class Player extends PIXI.Container {
@@ -71,7 +71,12 @@ export class Player extends PIXI.Container {
     }
 
     gameLoop(delta: PIXI.Ticker) {
-        this.sprite.rotation = rotateToPoint(this.game.mousePosition.x, this.game.mousePosition.y, this.sprite.position.x, this.sprite.position.y)
+
+        if (this.game.targetedObject != undefined) {
+            this.sprite.rotation = rotateToPoint(this.game.targetedObject.position.x, this.game.targetedObject.position.y, this.sprite.position.x, this.sprite.position.y);
+        } else {
+            this.sprite.rotation = rotateToPoint(this.game.mousePosition.x, this.game.mousePosition.y, this.sprite.position.x, this.sprite.position.y);
+        }
 
         for (var b = this.bullets.length - 1; b >= 0; b--) {
             this.bullets[b].position.x += Math.cos(this.bullets[b].rotation) * this.bullets[b].speed;
@@ -133,11 +138,6 @@ export class Player extends PIXI.Container {
                     this.credits += 1000;
                     this.game.dragons.splice(this.game.dragons.indexOf(fish), 1);
                 });
-                // if (fish.hp <= 0) {
-                //     this.credits += 1000;
-                //     fish.dead();
-                //     this.game.dragons.splice(this.game.dragons.indexOf(fish), 1);
-                // }
             };
         });
     }

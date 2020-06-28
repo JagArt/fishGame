@@ -8,6 +8,7 @@ import { Player } from "./player";
 import { Route, Directions } from "./utils/routes";
 import { FishSpine } from "./fishSpine";
 import { Effects, Effect } from "./effects";
+import { mouseCollapse } from "./utils/collapsController";
 
 export class Game {
 
@@ -36,7 +37,9 @@ export class Game {
         y: 0,
     };
 
-    objectIsTarget: boolean = false;
+    targetEffectIsActivated: boolean = false;
+    // objectIsTarget: boolean = false;
+    targetedObject: FishSpine | FishSprite | undefined;
 
     explosionTextures: PIXI.Texture[] = [];
 
@@ -166,7 +169,9 @@ export class Game {
                 if (!this.mouseOnEffects && this.bombIsActivated) {
                     this.nuclear_boom();
                 }
-                if (!this.mouseOnEffects && this.objectIsTarget) { }
+                if (!this.mouseOnEffects && this.targetEffectIsActivated) {
+                    this.fish_target();
+                }
             });
 
         this.bomb = new PIXI.Sprite(PIXI.Texture.from("bomb"));
@@ -223,9 +228,9 @@ export class Game {
 
         //effects panel
         this.effects.push(new Effects(this, PIXI.Texture.from("snowflake"), Effect.freese, "freezing", 50, 50, 0xFFFFFF, 0, 0));
-        this.effects.push(new Effects(this, PIXI.Texture.from("effective_gun"), Effect.freese, "lockdown", 50, 50, 0xFFFFFF, 0, 0));
+        this.effects.push(new Effects(this, PIXI.Texture.from("effective_gun"), Effect.freese, "high effective gun", 50, 50, 0xFFFFFF, 0, 0));
         this.effects.push(new Effects(this, PIXI.Texture.from("nuclear_bomb"), Effect.nuclear_bomb, "nuclear bomb", 50, 50, 0xFFFFFF, 0, 0));
-        this.effects.push(new Effects(this, PIXI.Texture.from("cursor"), Effect.freese, "high effective gun", 50, 50, 0xFFFFFF, 0, 0));
+        this.effects.push(new Effects(this, PIXI.Texture.from("cursor"), Effect.target, "lockdown", 50, 50, 0xFFFFFF, 0, 0));
         this.effects.push(new Effects(this, PIXI.Texture.from("black_hole"), Effect.freese, "black hole", 50, 50, 0xFFFFFF, 0, 0));
 
         for (var e = 1; e < this.effects.length; e++) {
@@ -305,6 +310,20 @@ export class Game {
                 this.dragons.splice(this.dragons.indexOf(dragon), 1);
             }
         })
+    }
+
+    fish_target() {
+        if (this.targetEffectIsActivated) {
+            this.dragons.forEach(dragon => {
+                if (mouseCollapse(this.mousePosition.x, this.mousePosition.y, dragon)) {
+                    this.targetedObject = dragon;
+                    setTimeout(() => {
+                        this.targetedObject = undefined;
+                    }, 5000);
+                }
+            });
+            this.targetEffectIsActivated = false;
+        }
     }
 }
 

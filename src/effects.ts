@@ -4,6 +4,7 @@ import { Sprite, Texture } from "pixi.js";
 export enum Effect {
     freese,
     nuclear_bomb,
+    target,
 }
 
 export class Effects extends PIXI.Sprite {
@@ -30,6 +31,9 @@ export class Effects extends PIXI.Sprite {
                         break;
                     case Effect.nuclear_bomb:
                         this.nuclear_bomb()
+                        break;
+                    case Effect.target:
+                        this.fish_target()
                         break;
                 }
             });
@@ -67,6 +71,15 @@ export class Effects extends PIXI.Sprite {
             console.log("bomb_disactivate");
             this.game.bombIsActivated = false;
             this.game.bomb!.visible = false;
+        }
+    }
+
+    private fish_target() {
+        this.game.targetEffectIsActivated = !this.game.targetEffectIsActivated;
+        if (this.game.targetEffectIsActivated) {
+            this.game.targetEffectIsActivated = true;
+        } else {
+            this.game.targetEffectIsActivated = false;
         }
     }
 

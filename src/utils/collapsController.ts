@@ -12,3 +12,13 @@ export function rectsIntersect(a: FishSpine | FishSprite, b: PIXI.Sprite) {
         aBox.y + aBox.height - 50 > bBox.y &&
         aBox.y + 50 < bBox.y + bBox.height;
 }
+
+export function mouseCollapse(mX: number, mY: number, b: FishSpine | FishSprite) {
+
+    let bBox = b.getBounds();
+
+    return mX > bBox.x &&
+        mX < bBox.x + bBox.width &&
+        mY > bBox.y &&
+        mY < bBox.y + bBox.height;
+}
